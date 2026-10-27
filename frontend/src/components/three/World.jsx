@@ -34,7 +34,7 @@ function CameraRig() {
     const want = {
       az: lerp(A.az, B.az, t) + idle + store.dragAz,
       el: Math.min(85, Math.max(4, lerp(A.el, B.el, t) + store.dragEl)),
-      d: lerp(A.d, B.d, t) * mobileK * (1 - store.zoom),
+      d: lerp(A.d, B.d, t) * mobileK * (1 - store.zoom) * (1 - (reduced ? 0 : 0.32) * store.beat),
       tx: lerp(A.t[0], B.t[0], t), ty: lerp(A.t[1], B.t[1], t), tz: lerp(A.t[2], B.t[2], t),
     };
     if (!cur.current) cur.current = { ...want };

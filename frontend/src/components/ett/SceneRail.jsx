@@ -1,7 +1,7 @@
 import { SCENES } from "@/lib/content";
 
-// Colori delle linee di avanzamento (una per capitolo): bianco, celeste, verde, giallo, arancione, rosso, marrone, viola.
-const RAIL = ["#F4F7FA", "#7DD3F0", "#4ADE80", "#FACC15", "#FB923C", "#EF4444", "#A0673A", "#A78BFA"];
+// Linee di avanzamento: tutte bianche.
+const RAIL = Array(8).fill("#F4F7FA");
 
 // Indicatore di avanzamento laterale (desktop) e barra inferiore (mobile), entrambi navigabili.
 export const SceneRail = ({ current, onJump }) => (

@@ -2,11 +2,30 @@ import { useCallback, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { setProgress, prefersReducedMotion } from "./store";
+import { setProgress, prefersReducedMotion, store } from "./store";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Sincronizza scroll -> progresso temporale (0..7) in modo deterministico: la scena i è centrata sul proprio pannello pinnato.
+// Fasi 02–07 (indici 1..6) durano il doppio: transizione nel primo/ultimo 22%, pausa al centro con zoom avanti-indietro.
+const HOLD = new Set([1, 2, 3, 4, 5, 6]);
+const IN = 0.22;
+function mapScroll(el, s) {
+  const secs = el.children;
+  const c = s + window.innerHeight / 2;
+  for (let i = 0; i < secs.length; i++) {
+    const top = secs[i].offsetTop - secs[0].offsetTop, len = secs[i].offsetHeight;
+    if (c < top + len || i === secs.length - 1) {
+      const u = Math.max(0, Math.min(1, (c - top) / len));
+      if (!HOLD.has(i)) return { p: i - 0.5 + u, beat: 0 };
+      if (u < IN) return { p: i - 0.5 + (u / IN) * 0.5, beat: 0 };
+      if (u > 1 - IN) return { p: i + ((u - 1 + IN) / IN) * 0.5, beat: 0 };
+      return { p: i, beat: Math.sin(Math.PI * (u - IN) / (1 - 2 * IN)) };
+    }
+  }
+  return { p: 0, beat: 0 };
+}
+
+// Sincronizza scroll -> progresso temporale (0..7): la scena i è centrata sul proprio pannello pinnato.
 export function useScrollStory(storyRef) {
   const lenisRef = useRef(null);
 
@@ -26,13 +45,12 @@ export function useScrollStory(storyRef) {
       start: "top top",
       end: "bottom bottom",
       onUpdate: (self) => {
-        const H = storyRef.current.offsetHeight / 8;
-        const vh = window.innerHeight;
-        const s = self.scroll() - self.start;
-        setProgress(Math.max(0, Math.min(7, (s - (H - vh) / 2) / H)));
+        const { p, beat } = mapScroll(storyRef.current, self.scroll() - self.start);
+        store.beat = beat;
+        setProgress(Math.max(0, Math.min(7, p)));
       },
-      onLeaveBack: () => setProgress(0),
-      onLeave: () => setProgress(7),
+      onLeaveBack: () => { store.beat = 0; setProgress(0); },
+      onLeave: () => { store.beat = 0; setProgress(7); },
     });
     return () => {
       st.kill();
@@ -46,8 +64,11 @@ export function useScrollStory(storyRef) {
   const jumpTo = useCallback((i, immediate = false) => {
     const el = storyRef.current;
     if (!el) return;
-    const H = el.offsetHeight / 8;
-    const y = el.getBoundingClientRect().top + window.scrollY + i * H + (H - window.innerHeight) / 2;
+    const sec = el.children[i];
+    if (!sec) return;
+    // centro della sezione = inizio della pausa per le fasi lunghe
+    const off = HOLD.has(i) ? sec.offsetHeight * (IN + 0.02) : sec.offsetHeight / 2;
+    const y = el.getBoundingClientRect().top + window.scrollY + sec.offsetTop - el.children[0].offsetTop + off - window.innerHeight / 2;
     if (lenisRef.current) lenisRef.current.scrollTo(y, { duration: immediate ? 0 : 2.2, immediate });
     else window.scrollTo({ top: y, behavior: immediate ? "auto" : "smooth" });
   }, [storyRef]);

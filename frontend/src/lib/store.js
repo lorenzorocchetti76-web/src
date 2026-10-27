@@ -8,6 +8,7 @@ export const store = {
   dragAz: 0,
   dragEl: 0,
   zoom: 0,
+  beat: 0,
   resetAt: 0,
 };
 

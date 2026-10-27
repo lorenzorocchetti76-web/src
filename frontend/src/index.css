@@ -48,6 +48,12 @@
     :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 2px; }
 }
 
+/* Ombra su tutti i testi sopra la scena 3D per migliorare la leggibilità */
+[data-testid="experience-page"] { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 2px 16px rgba(0, 0, 0, 0.45); }
+[data-testid="experience-page"] [class*="bg-[#F4F7FA]"],
+[data-testid="experience-page"] [class*="bg-white"] { text-shadow: none; }
+
+
 .font-display { font-family: "Inter", sans-serif; font-weight: 800; letter-spacing: -0.045em; }
 .font-wide { font-family: "Space Grotesk", sans-serif; }
 .font-mono { font-family: "Space Grotesk", sans-serif; font-weight: 500; }

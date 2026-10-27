@@ -18,7 +18,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
   const half = Math.ceil(words.length / 2);
   const lines = words.length > 4 ? [words.slice(0, half).join(" "), words.slice(half).join(" ")] : [scene.title];
   return (
-    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className="relative h-[170vh]">
+    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className={`relative ${index === 0 ? "h-[170vh]" : "h-[340vh]"}`}>
       <div className="sticky top-0 flex h-[100svh] items-end px-5 pb-24 sm:px-10 md:items-center md:pb-0 lg:px-16">
         <motion.div
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}
@@ -29,7 +29,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
             <span>{scene.n}</span>
             <span> — {scene.era}</span>
           </MaskLine>
-          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-[1.95rem] uppercase leading-[0.95] text-white sm:text-5xl lg:text-[3.5rem]">
+          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-[1.7rem] uppercase leading-[0.95] text-white [text-wrap:balance] sm:text-[2.6rem] lg:text-[3rem]">
             {lines.map((l, i) => <MaskLine key={i} i={i + 1}>{l}</MaskLine>)}
           </h2>
           <motion.p
@@ -42,7 +42,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
             <button
               data-testid={`story-open-${scene.id}`}
               onClick={() => onStory(index)}
-              className="group inline-flex items-center gap-2 rounded-full border border-[#F4F7FA]/30 bg-[#F4F7FA] px-5 py-2.5 text-sm font-semibold text-[#080B10] transition-colors duration-300 hover:bg-[#66D9EF]"
+              className="group inline-flex items-center gap-2 rounded-full border border-[#F4F7FA]/30 bg-[#F4F7FA] px-5 py-2.5 text-sm font-semibold text-[#080B10] [text-shadow:none] transition-colors duration-300 hover:bg-[#66D9EF]"
             >
               Approfondisci
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
