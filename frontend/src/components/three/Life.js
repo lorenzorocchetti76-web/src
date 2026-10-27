@@ -4,8 +4,8 @@ import { part, merge, cached, box, cyl, ball, cone } from "./Kit";
 const PI = Math.PI;
 
 // Figura umana con proporzioni realistiche; arti marcati per l'animazione di camminata in GPU.
-export const personGeo = ({ shirt, pants = "#2e2a26", skin = "#e0b48a", hair = "#3a2a1e", hat }) =>
-  cached(`person${shirt}${pants}${skin}${hair}${hat}`, () => {
+export const personGeo = ({ shirt, pants = "#2e2a26", skin = "#e0b48a", hair = "#3a2a1e", hat, tie, coat }) =>
+  cached(`person${shirt}${pants}${skin}${hair}${hat}${tie}${coat}`, () => {
     const p = [];
     [-1, 1].forEach((s) => {
       const leg = [1.25 * s, s * 0.035, 0.25, 0];
@@ -22,6 +22,11 @@ export const personGeo = ({ shirt, pants = "#2e2a26", skin = "#e0b48a", hair = "
     p.push(part(ball(0.052, 12, 10), skin, { p: [0, 0.54, 0], s: [0.92, 1.1, 1] }));
     p.push(part(ball(0.055, 12, 6), hair, { p: [0, 0.548, -0.006], s: [0.95, 1.05, 1.02], r: [-0.25, 0, 0] }));
     p.push(part(box(0.012, 0.012, 0.01), "#c89a74", { p: [0, 0.535, 0.05] }));
+    if (tie) {
+      p.push(part(box(0.05, 0.08, 0.01), "#f4f4f0", { p: [0, 0.43, 0.04] }));
+      p.push(part(box(0.018, 0.12, 0.012), tie, { p: [0, 0.4, 0.045] }));
+    }
+    if (coat) p.push(part(cyl(0.066, 0.075, 0.16, 9), shirt, { p: [0, 0.23, 0], s: [1, 1, 0.7], j: 0.04 }));
     if (hat) {
       p.push(part(cyl(0.085, 0.085, 0.01, 12), hat, { p: [0, 0.588, 0] }));
       p.push(part(cyl(0.047, 0.052, 0.05, 12), hat, { p: [0, 0.615, 0] }));

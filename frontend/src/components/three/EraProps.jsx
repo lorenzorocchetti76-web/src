@@ -1,6 +1,5 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import { store } from "@/lib/store";
 import { sceneWeight, groundY } from "./worldMath";
 import Particles from "./Particles";
@@ -8,13 +7,13 @@ import { Volcano, Stromatolites, Glacier, Forest, Village, Factory, CityBlock } 
 import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow, Rain } from "./Details";
 import { Person, Horse, Cow, Dog, Sheep, Mammoth, Lake, Highway, Rails, Fire, Sun, Ozone, Plane } from "./Details2";
 import { Church, Haystacks, BandedRocks, AlgaeMats, CoalHeaps, SolarFarm, Observatory, Dish, WeatherBalloon } from "./EraExtras";
+import ScienceStage from "./ScienceStage";
 
 const lakeY = (s, x, z, r) => {
   let m = -Infinity;
   for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) m = Math.max(m, groundY(s, x + i * r * 0.7, z + j * r * 0.7));
   return m + 0.06;
 };
-const INFO = ["#66D9EF", "#4FC3F7", "#7C83FD", "#B388FF", "#FFD27A", "#FF9F43", "#FF7138", "#FF4B45"];
 const peaks = (s, n, gap = 2.6) => {
   const c = [];
   for (let x = -5; x <= 5; x += 0.85) for (let z = -5; z <= 5; z += 0.85) c.push([x, groundY(s, x, z), z]);
@@ -24,7 +23,6 @@ const peaks = (s, n, gap = 2.6) => {
   return out;
 };
 const FIRES = peaks(1, 3);
-const MILE = ["#FFD27A", "#7CFFB2", "#B388FF", "#FF7138"];
 
 // Gruppo che compare/scompare in base alla vicinanza del progresso alla scena indicata.
 function Era({ index, spread = 1.25, children }) {
@@ -72,36 +70,6 @@ const COAL4 = [[0, -2.4], [4.2, -0.4], [-3, -0.2]].map(([x, z], i) => [...on(4, 
 const SOLAR6 = [];
 for (let x = -7.4; x <= -5.2; x += 0.62) for (let z = -1.6; z <= 1.8; z += 0.45) SOLAR6.push([...on(6, x, z), Math.PI / 2, 1]);
 const PINES6_OUT = inst(6, ring(12, 6.5, 9, 6), 0, 1.1);
-
-const CO2 = [317, 326, 339, 354, 370, 390, 414, 425];
-
-function Rays() {
-  const g = useRef();
-  useFrame((st) => { if (g.current) g.current.children.forEach((m, i) => { m.material.opacity = 0.45 + Math.sin(st.clock.elapsedTime * 2 + i) * 0.3; }); });
-  const rays = useMemo(() => [
-    { from: [-6, 7, -4], to: [-1.5, 0.3, 0], col: "#ffd27a" },
-    { from: [-5, 7, -2], to: [0, 0.3, 1], col: "#ffd27a" },
-    { from: [-4, 7, -5], to: [1.5, 0.3, -1], col: "#ffd27a" },
-    { from: [-1, 0.3, 0.5], to: [3, 5, 3], col: "#ff4b45" },
-    { from: [1, 0.3, -0.5], to: [5, 4.5, 1], col: "#ff4b45" },
-  ], []);
-  return (
-    <group ref={g}>
-      {rays.map((r, i) => {
-        const a = new THREE.Vector3(...r.from), b = new THREE.Vector3(...r.to);
-        const mid = a.clone().add(b).multiplyScalar(0.5);
-        const len = a.distanceTo(b);
-        const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-        return (
-          <mesh key={i} position={mid} quaternion={q}>
-            <cylinderGeometry args={[0.03, 0.03, len, 6]} />
-            <meshBasicMaterial color={r.col} transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
 
 export default function EraProps({ q = 1, shadows = false }) {
   const c = (n) => Math.round(n * q);
@@ -211,36 +179,13 @@ export default function EraProps({ q = 1, shadows = false }) {
         </>)}
       </Era>
       <Era index={5}>
-        <group rotation-y={Math.PI / 2}>
-        <group position={[-4.2, 0.2, 0.6]}>
-          {CO2.map((v, i) => (
-            <mesh key={i} position={[i * 1.2, (v - 280) / 56, 0]} castShadow={shadows}>
-              <boxGeometry args={[0.7, (v - 280) / 28, 0.7]} />
-              <meshStandardMaterial color={INFO[i]} emissive={INFO[i]} emissiveIntensity={0.55} roughness={0.3} />
-            </mesh>
-          ))}
-          {CO2.map((v, i) => (
-            <mesh key={`c${i}`} position={[i * 1.2, (v - 280) / 28 + 0.06, 0]}>
-              <boxGeometry args={[0.78, 0.08, 0.78]} />
-              <meshBasicMaterial color="#ffffff" />
-            </mesh>
-          ))}
-          <mesh position={[4.2, -0.02, 0]}><boxGeometry args={[10.2, 0.04, 1.4]} /><meshStandardMaterial color="#101D30" emissive="#1b3a5c" emissiveIntensity={0.4} /></mesh>
-        </group>
-        {[[-3, -3], [-1, -3.4], [1, -3.4], [3, -3]].map(([x, z], i) => (
-          <group key={i} position={[x, 0.2, z]}>
-            <mesh position-y={0.6 + i * 0.35}><cylinderGeometry args={[0.06, 0.06, 1.2 + i * 0.7, 8]} /><meshStandardMaterial color="#f4f7fa" /></mesh>
-            <mesh position-y={1.25 + i * 0.7}><sphereGeometry args={[0.2, 16, 12]} /><meshStandardMaterial color={MILE[i]} emissive={MILE[i]} emissiveIntensity={1.2} /></mesh>
-          </group>
-        ))}
-        </group>
-        <Rays />
+        <ScienceStage shadows={shadows} />
         <Observatory position={on(5, -5.6, 3.8)} scale={1.3} rotation-y={0.6} />
         <Dish position={on(5, 5.8, -4.0)} scale={1.4} rotation-y={-0.6} />
         <Dish position={on(5, 6.8, 2.6)} scale={1.1} rotation-y={-1.8} />
         <WeatherBalloon position={[-4.6, 0.8, 2.6]} height={7} />
-        <Person position={on(5, -4.9, 3.0)} shirt="#f4f7fa" pants="#2b3440" rotation-y={0.8} />
-        <Person position={on(5, 5.2, -3.2)} shirt="#f4f7fa" pants="#2b3440" radius={0.4} speed={0.3} />
+        <Person position={on(5, -5.8, 4.6)} shirt="#f4f7fa" pants="#2b3440" coat={1} rotation-y={0.8} />
+        <Person position={on(5, 6.0, -4.6)} shirt="#f4f7fa" pants="#2b3440" coat={1} radius={0.4} speed={0.3} />
       </Era>
       <Era index={6}>
         {(vis) => (<>

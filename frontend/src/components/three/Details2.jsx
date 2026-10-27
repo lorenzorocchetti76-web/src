@@ -10,7 +10,7 @@ import { personGeo, quadGeo, truckGeo, roadGeo } from "./Life";
 const seedOf = () => Math.random() * 6.28;
 
 // Persona realistica in 1 draw call: braccia e gambe animate nel vertex shader; cammina in cerchio se radius > 0.
-export function Person({ shirt = "#6b4f3a", skin = "#e0b48a", pants, hair, hat, radius = 0, speed = 0.5, ...props }) {
+export function Person({ shirt = "#6b4f3a", skin = "#e0b48a", pants, hair, hat, tie, coat, radius = 0, speed = 0.5, ...props }) {
   const root = useRef();
   const seed = useMemo(seedOf, []);
   const mat = useMemo(() => rigMaterial(radius ? { arm: 0.55, leg: 0.5, freq: 7, phase: seed } : { arm: 0.1, leg: 0, freq: 2, phase: seed }), [radius, seed]);
@@ -22,7 +22,7 @@ export function Person({ shirt = "#6b4f3a", skin = "#e0b48a", pants, hair, hat, 
   });
   return (
     <group {...props}>
-      <mesh ref={root} scale={0.85} geometry={personGeo({ shirt, skin, pants, hair, hat })} material={mat} castShadow />
+      <mesh ref={root} scale={0.85} geometry={personGeo({ shirt, skin, pants, hair, hat, tie, coat })} material={mat} castShadow />
     </group>
   );
 }
