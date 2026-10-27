@@ -55,7 +55,14 @@
 - Stile iperrealistico/cinematografico: camera prospettica fov 35 con movimento a mano, terreno continuo (heightfield GPU con dettagli, rocce sui pendii, lava emissiva), oceano fino all'orizzonte, cielo con gradiente/alone solare/stelle notturne, nebbia atmosferica
 - Modelli (case, persone, animali, fabbriche) ancora low-poly
 
+## Iterazione 8 (2026-10-27)
+- Modelli realistici e leggeri: geometrie fuse con colori per vertice (Kit.js, Buildings.js, Life.js); case con tetto a falde/comignolo/travi, persone e quadrupedi con animazione arti in vertex shader, fabbriche in mattoni, grattacieli, camion; boschi e villaggi instanziati con vento in GPU; traversine instanziate
+- Profondità di campo leggera (solo desktop, solo paesaggi); audio pulito (rumore marrone filtrato, loop sfumato, limitatore)
+- Fasi 02–07 durano il doppio (340vh) con pausa del testo e zoom avanti/indietro della camera (store.beat); titoli più piccoli; ombra su tutti i testi; 8 linee di avanzamento tutte bianche
+- Test frontend: iteration_1.json 100%
+
 ## Backlog
+- In attesa: integrazione ChatGPT (l'utente deve scegliere la funzione: guida chat, spiegazione capitolo, quiz o insight admin)
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)
 - P2: toggle camera ortografica isometrica pura; video scroll-scrubbed; qualità grafica manuale

@@ -1,0 +1,23 @@
+{
+  "summary": "Frontend-only testing of EARTH THROUGH TIME scrollytelling (Italian). Verified home load (1440x800 + 390x844), WebGL canvas, section heights (01/finale=170vh, 02-07=340vh), scene title size (48px lg / 27px mobile) with text-shadow, Approfondisci buttons have text-shadow:none, rail-jump buttons land on correct chapters with titles visible, mobile bottom progress lines all white (#F4F7FA) for reached and dim rgba(244,247,250,0.15) for unreached, Medioevo scene renders houses with gable roofs/chimneys + pines + people + cow/horse, Industria scene renders factories with chimneys + trucks + highway + rails + people. 0 console errors on load. Admin /admin login with admin@earththroughtime.it works and dashboard renders analytics. Camera zoom-in/out beat during pin pause could not be numerically asserted (store.beat not exposed on window) but title stays pinned/visible across 30/50/70% of section height for all chapters 02-07.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Camera zoom beat (store.beat) is not exposed to window, making it hard to numerically regression-test the zoom-in-then-out effect. Consider exposing a debug hook (e.g., window.__ett_beat) in dev builds.",
+    "SceneRail mobile progress bar uses aria-hidden=true; that's fine for a-11y, but ensure the desktop vertical rail buttons retain accessible labels (they do via aria-label)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "admin@earththroughtime.it / Clima2026! (works)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All Batch 1/2 requested UI acceptance criteria verified green. Sections heights, titles, text-shadow, mobile all-white progress, rail-jump navigation, Medioevo/Industria 3D content, admin login all pass with no console errors. If need to assert camera zoom numerically, ask main agent to expose store.beat as window.__ett_beat.",
+  "rca of the issue": "n/a - no issues found"
+}
