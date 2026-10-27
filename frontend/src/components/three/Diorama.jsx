@@ -4,12 +4,15 @@ import { store } from "@/lib/store";
 import { PROFILES, WATER, dioramaWeight, ease, clamp01 } from "./worldMath";
 import { useTerrainMaterial, useTerrainGeometry } from "./Terrain";
 
+// Mappa ingrandita: l'intero diorama è scalato per riempire di più l'inquadratura.
+const MAP = 1.15;
+
 export default function Diorama({ n = 18, shadows = false, children }) {
   const group = useRef();
   const water = useRef();
   const last = useRef(-1);
   const { mat, uniforms: U } = useTerrainMaterial();
-  const geo = useTerrainGeometry(n > 14 ? 200 : 120);
+  const geo = useTerrainGeometry(n > 14 ? 220 : 130);
   const waveTime = useMemo(() => ({ value: 0 }), []);
   const onWaterCompile = useMemo(() => (s) => {
     s.uniforms.uTime = waveTime;
@@ -36,7 +39,7 @@ export default function Diorama({ n = 18, shadows = false, children }) {
     if (!group.current.visible) return;
     waveTime.value = state.clock.elapsedTime;
     group.current.position.y = (1 - dw) * -9;
-    group.current.scale.setScalar(0.7 + 0.3 * dw);
+    group.current.scale.setScalar(MAP * (0.7 + 0.3 * dw));
     if (Math.abs(p - last.current) < 0.0008) return;
     last.current = p;
     const a = Math.floor(p);

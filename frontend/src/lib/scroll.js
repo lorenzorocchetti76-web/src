@@ -6,9 +6,9 @@ import { setProgress, prefersReducedMotion, store } from "./store";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Fasi 02–07 (indici 1..6) durano il doppio: transizione nel primo/ultimo 22%, pausa al centro con zoom avanti-indietro.
+// Fasi 02–07 (indici 1..6): transizione nel primo/ultimo 31% (75vh), pausa al centro (95vh) con zoom avanti-indietro.
 const HOLD = new Set([1, 2, 3, 4, 5, 6]);
-const IN = 0.22;
+const IN = 0.306;
 function mapScroll(el, s) {
   const secs = el.children;
   const c = s + window.innerHeight / 2;

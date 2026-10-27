@@ -13,6 +13,7 @@ import { SceneSection } from "@/components/ett/SceneSection";
 import { FinalSection, SourcesFooter } from "@/components/ett/Closing";
 import { StorySheet } from "@/components/ett/StorySheet";
 import { SceneRail } from "@/components/ett/SceneRail";
+import { LiveThermometer } from "@/components/ett/Thermometer";
 import { ErrorBoundary, FallbackBackdrop, FallbackNotice } from "@/components/ett/Fallback";
 
 const World = lazy(() => import("@/components/three/World"));
@@ -70,6 +71,7 @@ export default function Experience() {
       <a href="/" aria-label="Punto di non ritorno" data-testid="corner-logo" className="fixed left-4 top-4 z-40 sm:left-8 sm:top-6"><Logo className="h-8 w-8" /></a>
       <div className="fixed right-4 top-4 z-40 sm:right-8 sm:top-6" data-testid="corner-audio"><SoundControl /></div>
       <SceneRail current={scene} onJump={onJump} />
+      <LiveThermometer />
       <main className="relative z-10">
         <Hero ready={loaded} onStart={() => jumpTo(0)} />
         <div ref={storyRef} data-testid="story-container">

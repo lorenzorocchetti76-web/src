@@ -6,7 +6,8 @@ import { sceneWeight, groundY } from "./worldMath";
 import Particles from "./Particles";
 import { Volcano, Stromatolites, Glacier, Forest, Village, Factory, CityBlock } from "./Models";
 import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow, Rain } from "./Details";
-import { Person, Horse, Cow, Dog, Lake, Highway, Rails, Fire, Sun, Ozone, Plane } from "./Details2";
+import { Person, Horse, Cow, Dog, Sheep, Mammoth, Lake, Highway, Rails, Fire, Sun, Ozone, Plane } from "./Details2";
+import { Church, Haystacks, BandedRocks, AlgaeMats, CoalHeaps, SolarFarm, Observatory, Dish, WeatherBalloon } from "./EraExtras";
 
 const lakeY = (s, x, z, r) => {
   let m = -Infinity;
@@ -48,6 +49,29 @@ const PINES3 = inst(3, [[-4, 0.5, 1.2], [-3.4, 1.6, 1.2], [3.6, -1.2, 1.2], [4.2
 const HOUSES3 = [[-3, -2.6], [-1.8, -3.1], [-0.6, -2.4], [1.4, 2.8], [2.6, 2.3], [0.2, 3.3]].map(([x, z], i) => [...on(3, x, z), i * 0.7, 1]);
 const HOUSES4 = [[-3.5, -2.5], [-2.4, -3.4], [0, 3.6], [-3.6, 3.2]].map(([x, z], i) => [...on(4, x, z), i * 0.9, 1]);
 const PINES6 = inst(6, [[-3.8, 2.2, 1.2], [-3, 3.4, 1.2], [-4.2, 3.6, 1.2], [-4.6, 1.2, 1], [-2.4, 4.4, 1.1]]);
+
+// Anello esterno della mappa ingrandita: punti pseudo-casuali tra r0 e r1 (deterministici).
+const ring = (n, r0, r1, k = 1) => Array.from({ length: n }, (_, i) => {
+  const a = i * 2.39996 + k, r = r0 + (((i * 0.618 + k * 0.37) % 1) * (r1 - r0));
+  return [Math.cos(a) * r, Math.sin(a) * r];
+});
+const pick = (s, n, test, k) => ring(n * 4, 2, 9, k).filter(([x, z]) => test(groundY(s, x, z))).slice(0, n);
+// 02 Ossigeno: tappeti di cianobatteri sull'acqua bassa, rocce di ferro a bande sulle alture.
+const MATS1 = pick(1, 10, (h) => h < 0.92, 1).map(([x, z], i) => [x, 0.98, z, i, 0.8 + (i % 3) * 0.25]);
+const BIF1 = pick(1, 5, (h) => h > 1.25, 2).map(([x, z], i) => [...on(1, x, z), i * 1.1, 0.9 + (i % 2) * 0.4]);
+// 03 Glaciazioni: anello di ghiacciai esterni.
+const GLAC2 = ring(5, 6.8, 8.6, 3).map(([x, z]) => on(2, x, z));
+// 04 Medioevo: bosco esterno, case sparse, covoni.
+const PINES3_OUT = inst(3, ring(18, 6, 9, 4), 0, 1.1);
+const HOUSES3_OUT = [[6.4, -1.2], [-6.2, 3.8], [3.6, 6.2], [-2.6, 6.4], [5.6, 4.4]].map(([x, z], i) => [...on(3, x, z), i * 1.9, 1]);
+const HAY3 = [[-5.6, -1.8], [-5.9, -1.1], [-5.2, -2.5], [5.8, 2.4], [6.3, 1.7]].map(([x, z], i) => [...on(3, x, z), i, 1]);
+// 05 Industria: case operaie a schiera oltre i binari, cumuli di carbone.
+const ROWS4 = Array.from({ length: 10 }, (_, i) => { const a = -2.2 + i * 0.32; return [...on(4, Math.cos(a) * 7.6, Math.sin(a) * 7.6), -a + Math.PI / 2, 1]; });
+const COAL4 = [[0, -2.4], [4.2, -0.4], [-3, -0.2]].map(([x, z], i) => [...on(4, x, z), i * 2, 1 + (i % 2) * 0.3]);
+// 07 Oggi: parco solare e bosco esterno.
+const SOLAR6 = [];
+for (let x = -7.4; x <= -5.2; x += 0.62) for (let z = -1.6; z <= 1.8; z += 0.45) SOLAR6.push([...on(6, x, z), Math.PI / 2, 1]);
+const PINES6_OUT = inst(6, ring(12, 6.5, 9, 6), 0, 1.1);
 
 const CO2 = [317, 326, 339, 354, 370, 390, 414, 425];
 
@@ -105,7 +129,12 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Rocks count={c(24)} color="#4a4038" groundY={(x, z) => groundY(1, x, z)} />
           <Cloud position={[0, 5.5, -2]} scale={1.3} speed={0.2} />
           <Cloud position={[0, 4.8, 3]} scale={1} speed={0.15} />
-          <Rain visibleRef={vis} count={c(420)} area={[13, 7, 13]} speed={8} wind={0.1} opacity={0.32} />
+          <Rain visibleRef={vis} count={c(520)} area={[18, 7, 18]} speed={8} wind={0.1} opacity={0.32} />
+          <AlgaeMats items={MATS1} />
+          <BandedRocks items={BIF1} shadows={shadows} />
+          <Stromatolites position={on(1, -6.4, 3.2)} scale={1} rotation-y={1.7} />
+          <Stromatolites position={on(1, 6.6, -2.4)} scale={1.1} rotation-y={2.6} />
+          <Particles visibleRef={vis} count={c(120)} area={[16, 1.4, 16]} origin={[0, 1.6, 0]} speed={0.3} color="#d8fff0" size={0.05} opacity={0.45} />
           {FIRES.map((p, i) => <Fire key={`f${i}`} position={p} scale={1.1 - i * 0.15} />)}
           <Particles visibleRef={vis} count={c(90)} area={[1.5, 3, 1.5]} origin={[FIRES[0][0], FIRES[0][1] + 0.4, FIRES[0][2]]} speed={1.2} color="#ff9f43" size={0.08} />
         </>)}
@@ -120,6 +149,11 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Iceberg position={on(2, 0.6, 0.4)} scale={1.2} />
           <Iceberg position={on(2, -1, 3.8)} scale={0.8} />
           <Aurora position={[0, 7.5, -6]} rotation-x={-0.25} />
+          {GLAC2.map((p, i) => <Glacier key={`g${i}`} position={p} scale={1.1 + (i % 3) * 0.3} rotation-y={i * 1.3} />)}
+          <Mammoth position={on(2, -1.6, 1.6)} rotation-y={0.5} />
+          <Mammoth position={on(2, -0.4, 2.2)} rotation-y={2.0} scale={0.8} />
+          <Mammoth position={on(2, 1.8, -0.8)} rotation-y={-0.7} scale={0.9} />
+          <Rocks count={c(30)} spread={9} color="#7d8288" groundY={(x, z) => groundY(2, x, z)} />
           {[[-1.2, -0.6], [1.6, 1.4], [-3.2, 1.2], [3.6, -1]].map(([x, z], i) => (
             <Particles key={`v${i}`} visibleRef={vis} count={c(40)} area={[1.2, 3.5, 1.2]} origin={[x, groundY(2, x, z), z]} speed={0.35} color="#e8f2f8" size={0.55} additive={false} opacity={0.28} swirl={0.5} />
           ))}
@@ -128,7 +162,13 @@ export default function EraProps({ q = 1, shadows = false }) {
       <Era index={3}>
         {(vis) => (<>
           <Village items={HOUSES3} shadows={shadows} />
+          <Village items={HOUSES3_OUT} shadows={shadows} />
           <Forest items={PINES3} shadows={shadows} />
+          <Forest items={PINES3_OUT} shadows={shadows} />
+          <Church position={on(3, -1.6, -4.8)} rotation-y={0.3} />
+          <Haystacks items={HAY3} shadows={shadows} />
+          {[[-6, 0.6], [-6.5, 1.2], [-5.7, 1.7], [-6.8, 0.1], [-5.4, 0.9]].map(([x, z], i) => <Sheep key={`s${i}`} position={on(3, x, z)} rotation-y={i * 1.4} />)}
+          <Person position={on(3, -5.4, -1.4)} shirt="#5a4a3a" pants="#3b2f24" hat="#c9a24a" rotation-y={1.1} />
           <Particles visibleRef={vis} count={c(80)} area={[2, 2.5, 2]} origin={[-1.8, 1, -2.7]} speed={0.35} color="#c8ccd2" size={0.12} additive={false} opacity={0.5} />
           <Particles visibleRef={vis} count={c(220)} area={[14, 7, 14]} origin={[0, 0, 0]} speed={-0.5} color="#ffffff" size={0.05} additive={false} swirl={0.4} />
           <Windmill position={on(3, 3.8, 0.6)} scale={1.3} rotation-y={-0.6} />
@@ -153,6 +193,10 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Factory position={on(4, -1.6, 1.6)} scale={1.1} rotation-y={Math.PI / 2} />
           <Factory position={on(4, 3.2, 2.2)} scale={0.9} rotation-y={-0.4} />
           <Village items={HOUSES4} roof="#5a4038" wall="#7a6656" shadows={shadows} />
+          <Village items={ROWS4} roof="#3a3a3e" wall="#6a3a2c" shadows={shadows} />
+          <CoalHeaps items={COAL4} shadows={shadows} />
+          <Factory position={on(4, -7.2, -3.2)} scale={1.1} rotation-y={0.9} />
+          <Factory position={on(4, -5.0, 6.2)} scale={1} rotation-y={-0.5} />
           <Particles visibleRef={vis} count={c(260)} area={[7, 8, 5]} origin={[0.8, 2.5, 0]} speed={0.7} color="#8c8f94" size={0.22} additive={false} opacity={0.45} swirl={0.5} />
           <Particles visibleRef={vis} count={c(140)} area={[16, 4, 16]} origin={[0, 7, 0]} speed={0.12} color="#66d9ef" size={0.06} />
           <Rails radius={6.2} y={0.92} />
@@ -191,6 +235,12 @@ export default function EraProps({ q = 1, shadows = false }) {
         ))}
         </group>
         <Rays />
+        <Observatory position={on(5, -5.6, 3.8)} scale={1.3} rotation-y={0.6} />
+        <Dish position={on(5, 5.8, -4.0)} scale={1.4} rotation-y={-0.6} />
+        <Dish position={on(5, 6.8, 2.6)} scale={1.1} rotation-y={-1.8} />
+        <WeatherBalloon position={[-4.6, 0.8, 2.6]} height={7} />
+        <Person position={on(5, -4.9, 3.0)} shirt="#f4f7fa" pants="#2b3440" rotation-y={0.8} />
+        <Person position={on(5, 5.2, -3.2)} shirt="#f4f7fa" pants="#2b3440" radius={0.4} speed={0.3} />
       </Era>
       <Era index={6}>
         {(vis) => (<>
@@ -198,6 +248,12 @@ export default function EraProps({ q = 1, shadows = false }) {
           <CityBlock position={on(6, 1.4, 3.4)} scale={1} rotation-y={1.3} />
           <Glacier position={on(6, -3, -3)} scale={[0.9, 0.6, 0.9]} />
           <Forest items={PINES6} snow={0} shadows={shadows} />
+          <Forest items={PINES6_OUT} snow={0} shadows={shadows} />
+          <SolarFarm items={SOLAR6} shadows={shadows} />
+          {[[-6.4, -5.2], [-4.6, -6.6], [6.8, -5.4], [7.6, -3.6]].map(([x, z], i) => <Turbine key={`t2${i}`} position={on(6, x, z)} rotation-y={0.4} scale={1.2} />)}
+          <CityBlock position={on(6, 7.2, 1.8)} scale={0.9} rotation-y={2.2} />
+          <Fire position={on(6, -4.4, 3.2)} scale={1.2} />
+          <Fire position={on(6, -3.2, 4.0)} scale={0.9} />
           <Particles visibleRef={vis} count={c(120)} area={[3, 3, 3]} origin={[-3.6, 0.8, 3]} speed={1.1} color="#ff7138" size={0.1} />
           <Particles visibleRef={vis} count={c(160)} area={[16, 3, 16]} origin={[0, 1, 0]} speed={0.25} color="#ff4b45" size={0.05} opacity={0.5} />
           {[[-1.5, -4.2], [0.2, -4.6], [1.9, -4.2]].map(([x, z], i) => (

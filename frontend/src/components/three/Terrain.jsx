@@ -14,7 +14,7 @@ float riverF(vec2 p){ return 1.0-smoothstep(0.45,0.85,abs(p.y-sin(p.x*0.45)*1.8-
 float H(vec2 p){
   float f=fieldF(p);
   float h=uBase+uAmp*f+uRd*riverF(p)+(fb(p*1.3)-0.5)*uDetail*(0.4+uAmp*0.35);
-  float e=smoothstep(6.6,8.6,max(abs(p.x),abs(p.y)));
+  float e=smoothstep(9.4,12.2,max(abs(p.x),abs(p.y)));
   return mix(h,-0.55,e);
 }
 `;
@@ -54,7 +54,7 @@ export function useTerrainMaterial() {
 
 export function useTerrainGeometry(segments) {
   return useMemo(() => {
-    const g = new THREE.PlaneGeometry(19, 19, segments, segments);
+    const g = new THREE.PlaneGeometry(26, 26, segments, segments);
     g.rotateX(-Math.PI / 2);
     return g;
   }, [segments]);

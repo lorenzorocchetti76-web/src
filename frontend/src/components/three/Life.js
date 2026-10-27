@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { part, merge, cached, box, cyl, ball, cone } from "./Kit";
 
 const PI = Math.PI;
@@ -34,6 +35,8 @@ export const quadGeo = (kind) => cached(`quad${kind}`, () => {
     horse: { b: [0.46, 0.17, 0.15], lh: 0.27, lw: 0.024, nk: 0.24, col: "#6b4226", dark: "#24160d", hoof: "#1b1410" },
     cow: { b: [0.44, 0.21, 0.19], lh: 0.17, lw: 0.03, nk: 0.15, col: "#f1ece4", dark: "#2a2522", hoof: "#3a3430" },
     dog: { b: [0.2, 0.075, 0.07], lh: 0.09, lw: 0.012, nk: 0.09, col: "#a8743f", dark: "#5a3a1e", hoof: "#5a3a1e" },
+    mammoth: { b: [0.62, 0.38, 0.32], lh: 0.3, lw: 0.055, nk: 0.1, col: "#5a3b26", dark: "#3a2516", hoof: "#2a1d14" },
+    sheep: { b: [0.2, 0.13, 0.12], lh: 0.08, lw: 0.012, nk: 0.06, col: "#ece7dc", dark: "#2a2622", hoof: "#2a2622" },
   }[kind];
   const [bx, by, bz] = S.b, y0 = S.lh + by / 2;
   const p = [
@@ -63,6 +66,11 @@ export const quadGeo = (kind) => cached(`quad${kind}`, () => {
     [[0.06, 0.05, 1], [-0.1, 0.02, 1], [0.0, -0.01, -1], [-0.14, 0.04, -1], [0.12, 0.0, -1]].forEach(([x, y, s]) =>
       p.push(part(ball(1, 8, 6), S.dark, { p: [x, y0 + y, s * bz * 0.42], s: [0.055, 0.05, 0.03], j: 0.02 })));
     p.push(part(ball(0.04, 8, 6), "#e8a3a0", { p: [-bx * 0.18, S.lh + 0.01, 0] }));
+  }
+  if (kind === "mammoth") {
+    p.push(part(ball(1, 12, 8), S.dark, { p: [bx * 0.2, y0 + by * 0.42, 0], s: [bx * 0.26, by * 0.3, bz * 0.42], j: 0.12 }));
+    [-1, 1].forEach((s) => p.push(part(new THREE.TorusGeometry(0.13, 0.014, 6, 12, PI * 0.75), "#efe6cf", { p: [hx + 0.06, hy - 0.08, s * 0.07], r: [0, 0, PI * 1.05], rig })));
+    p.push(part(cyl(0.02, 0.045, 0.34, 8), S.col, { p: [hx + 0.1, hy - 0.16, 0], r: [0, 0, -0.25], rig }));
   }
   const tp = [-bx / 2, y0 + by * 0.25, 0];
   p.push(part(cyl(0.008, kind === "horse" ? 0.03 : 0.01, by * 1.1, 6), S.dark, { p: [tp[0] - 0.02, tp[1] - by * 0.5, 0], r: [0, 0, -0.25], rig: [3, ...tp] }));

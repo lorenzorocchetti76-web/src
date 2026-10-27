@@ -18,7 +18,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
   const half = Math.ceil(words.length / 2);
   const lines = words.length > 4 ? [words.slice(0, half).join(" "), words.slice(half).join(" ")] : [scene.title];
   return (
-    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className={`relative ${index === 0 ? "h-[170vh]" : "h-[340vh]"}`}>
+    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className={`relative ${index === 0 ? "h-[170vh]" : "h-[245vh]"}`}>
       <div className="sticky top-0 flex h-[100svh] items-end px-5 pb-24 sm:px-10 md:items-center md:pb-0 lg:px-16">
         <motion.div
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}

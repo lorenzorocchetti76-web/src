@@ -48,8 +48,8 @@ export const SourcesFooter = () => (
       <p className="font-display text-[13vw] leading-[0.9] text-white sm:text-[8.5vw]">Punto di<br />non ritorno</p>
       <div className="mt-10 flex flex-col gap-4 font-mono text-xs uppercase tracking-widest text-white sm:flex-row sm:items-center sm:justify-between">
         <span>Un progetto di {SITE.credit}</span>
-        <Link to="/galleria" data-testid="footer-gallery-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Galleria 3D ↗</Link>
-        <a href={`mailto:${SITE.email}`} data-testid="footer-email-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Scrivici — {SITE.email} ↗</a>
+        <Link to="/galleria" data-testid="footer-gallery-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Galleria 3D</Link>
+        <a href={`mailto:${SITE.email}`} data-testid="footer-email-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Scrivici — {SITE.email}</a>
         <span>© 2026 SRC</span>
       </div>
     </footer>

@@ -35,6 +35,8 @@ function Quad({ kind, ...props }) {
 export const Horse = (p) => <Quad kind="horse" {...p} />;
 export const Cow = (p) => <Quad kind="cow" {...p} />;
 export const Dog = (p) => <Quad kind="dog" {...p} />;
+export const Mammoth = (p) => <Quad kind="mammoth" {...p} />;
+export const Sheep = (p) => <Quad kind="sheep" {...p} />;
 
 export function Lake({ radius = 1.1, ...props }) {
   const fish = useRef();
