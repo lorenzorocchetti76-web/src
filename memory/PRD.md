@@ -46,6 +46,11 @@
 - Ciclo giorno/notte legato allo scroll (alba cap.2 → giorno → tramonto cap.6 → notte cap.7) con finestre di case/fabbriche/città che si accendono (materiali condivisi)
 - Performance: precompilazione materiali, niente point light dinamiche (sostituite da glow), shader globo più leggero, ombre 1024 PCF, bloom a mezza risoluzione, niente SMAA, dpr max 1.5, stelle statiche, PerformanceMonitor che abbassa qualità se gli fps calano
 
+## Iterazione 6 (2026-10-27)
+- Cielo notturno: luna con alone e stelle cadenti al calare della notte (cap.07 e finale); il sole sparisce al tramonto
+- Titoli su smartphone ridotti ~13% (scene, hero, frase finale)
+- In attesa di conferma: passaggio da stile isometrico a iperrealistico/cinematografico
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

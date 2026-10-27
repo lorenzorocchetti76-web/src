@@ -29,7 +29,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
             <span>{scene.n}</span>
             <span> — {scene.era}</span>
           </MaskLine>
-          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-4xl uppercase leading-[0.95] text-white sm:text-5xl lg:text-[3.5rem]">
+          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-[1.95rem] uppercase leading-[0.95] text-white sm:text-5xl lg:text-[3.5rem]">
             {lines.map((l, i) => <MaskLine key={i} i={i + 1}>{l}</MaskLine>)}
           </h2>
           <motion.p

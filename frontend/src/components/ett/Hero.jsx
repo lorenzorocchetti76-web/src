@@ -15,7 +15,7 @@ export const Hero = ({ onStart, ready }) => {
     <section data-testid="hero-section" className="relative flex h-[100svh] flex-col justify-end px-5 pb-10 sm:px-10 lg:px-16">
       <motion.div style={{ y, opacity: op }} initial="hidden" animate={ready ? "show" : "hidden"} className="relative">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-white">{SITE.credit} presenta</p>
-        <h1 className="font-display mt-4 text-[15vw] leading-[0.88] text-white sm:text-[12vw] lg:text-[10vw]">
+        <h1 className="font-display mt-4 text-[13vw] leading-[0.88] text-white sm:text-[12vw] lg:text-[10vw]">
           {["Punto", "di non", "ritorno"].map((w, i) => (
             <span key={w} className="block overflow-hidden pb-[0.06em]">
               <motion.span className={`block ${i === 1 ? "pl-[12vw]" : ""}`} variants={reveal} custom={i}>

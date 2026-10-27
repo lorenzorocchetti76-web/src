@@ -10,7 +10,7 @@ import Globe from "./Globe";
 import Diorama from "./Diorama";
 import EraProps from "./EraProps";
 import Particles from "./Particles";
-import { Meteors, Ufo } from "./Details2";
+import { Meteors, Ufo, NightSky } from "./Details2";
 import { WINDOW_MATS } from "./Models";
 import { smooth } from "./worldMath";
 
@@ -164,6 +164,7 @@ export default function World({ onReady }) {
       <CameraRig />
       <Stars q={q} />
       <SpaceExtras />
+      <NightSky />
       <Globe segments={low ? 64 : 160} low={low} />
       <Diorama n={low ? 14 : 18} shadows={shadows}>
         <EraProps q={q} shadows={shadows} />

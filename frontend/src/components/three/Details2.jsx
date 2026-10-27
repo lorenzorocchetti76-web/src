@@ -2,6 +2,8 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { getSprite } from "./Particles";
+import { store } from "@/lib/store";
+import { smooth } from "./worldMath";
 
 const seedOf = () => Math.random() * 6.28;
 const Std = (p) => <meshStandardMaterial roughness={0.8} flatShading {...p} />;
@@ -165,9 +167,52 @@ export function Fire({ scale = 1, ...props }) {
   );
 }
 
-export function Sun(props) {
+// Cielo notturno: luna e stelle cadenti che compaiono quando arriva la notte (capitolo 07 e finale).
+export function NightSky() {
+  const g = useRef();
+  const stars = useRef();
+  const data = useMemo(() => Array.from({ length: 6 }, () => ({
+    start: new THREE.Vector3(-6 + Math.random() * 14, 8 + Math.random() * 4, -6 + Math.random() * 10),
+    dir: new THREE.Vector3(-1, -0.45, 0.25 * (Math.random() - 0.5)).normalize(),
+    period: 3 + Math.random() * 5, off: Math.random() * 8,
+  })), []);
+  const up = useMemo(() => new THREE.Vector3(0, 1, 0), []);
+  useFrame((s) => {
+    const p = store.progress;
+    const w = smooth(5.4, 6.2, p);
+    g.current.visible = w > 0.01;
+    if (!g.current.visible) return;
+    g.current.children[0].material.opacity = w;
+    g.current.children[1].material.opacity = w * 0.5;
+    const t = s.clock.elapsedTime;
+    stars.current.children.forEach((m, i) => {
+      const d = data[i];
+      const u = ((t + d.off) % d.period) / 0.9;
+      m.visible = u < 1;
+      if (!m.visible) return;
+      m.position.copy(d.start).addScaledVector(d.dir, u * 9);
+      m.quaternion.setFromUnitVectors(up, d.dir.clone().negate());
+      m.material.opacity = Math.sin(u * Math.PI) * w;
+    });
+  });
   return (
-    <group {...props}>
+    <group ref={g}>
+      <mesh position={[5, 8, 6]}><sphereGeometry args={[0.7, 32, 24]} /><meshBasicMaterial color="#eef3ff" transparent /></mesh>
+      <sprite position={[5, 8, 6]} scale={5}><spriteMaterial map={getSprite()} color="#a9c2ff" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} /></sprite>
+      <group ref={stars}>
+        {data.map((_, i) => (
+          <mesh key={i}><cylinderGeometry args={[0.015, 0.0, 1.6, 4]} /><meshBasicMaterial color="#ffffff" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
+        ))}
+      </group>
+    </group>
+  );
+}
+
+export function Sun(props) {
+  const g = useRef();
+  useFrame(() => { const k = 1 - smooth(5.3, 5.85, store.progress); g.current.visible = k > 0.01; g.current.scale.setScalar(Math.max(0.001, k)); });
+  return (
+    <group ref={g} {...props}>
       <mesh><sphereGeometry args={[0.9, 32, 24]} /><meshBasicMaterial color="#fff1c1" /></mesh>
       <sprite scale={6}><spriteMaterial map={getSprite()} color="#ffcf6a" transparent opacity={0.7} blending={THREE.AdditiveBlending} depthWrite={false} /></sprite>
       <sprite scale={12}><spriteMaterial map={getSprite()} color="#ff9f43" transparent opacity={0.25} blending={THREE.AdditiveBlending} depthWrite={false} /></sprite>

@@ -7,7 +7,7 @@ export const FinalSection = ({ onStory }) => (
   <section id="finale" data-testid="scene-section-finale" aria-labelledby="title-finale" className="relative h-[170vh]">
     <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-end px-5 pb-20 text-center sm:justify-center sm:pb-0">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}>
-        <h2 id="title-finale" className="font-display text-4xl leading-[1] text-white sm:text-6xl lg:text-7xl">
+        <h2 id="title-finale" className="font-display text-[1.95rem] leading-[1] text-white sm:text-6xl lg:text-7xl">
           {SITE.finalTitle.map((l, i) => (
             <span key={l} className="block overflow-hidden pb-[0.08em]">
               <motion.span className="block"
