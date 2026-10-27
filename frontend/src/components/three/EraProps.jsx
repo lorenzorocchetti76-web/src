@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { store } from "@/lib/store";
 import { sceneWeight, groundY } from "./worldMath";
 import Particles from "./Particles";
-import { Volcano, Stromatolites, Glacier, Pine, House, Factory, CityBlock } from "./Models";
+import { Volcano, Stromatolites, Glacier, Forest, Village, Factory, CityBlock } from "./Models";
 import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow, Rain } from "./Details";
 import { Person, Horse, Cow, Dog, Lake, Highway, Rails, Fire, Sun, Ozone, Plane } from "./Details2";
 
@@ -41,6 +41,13 @@ function Era({ index, spread = 1.25, children }) {
 }
 
 const on = (s, x, z) => [x, groundY(s, x, z) - 0.05, z];
+// Elenchi per gli oggetti instanziati: [x, y, z, rotY, scala].
+const inst = (s, pts, rot = 0, sc = 1) => pts.map(([x, z, k], i) => [...on(s, x, z), i * 1.37 + rot, (k ?? sc) * (0.9 + ((i * 7) % 5) * 0.05)]);
+const PINES3 = inst(3, [[-4, 0.5, 1.2], [-3.4, 1.6, 1.2], [3.6, -1.2, 1.2], [4.2, -2.6, 1.2], [2.8, -3.6, 1.2], [-4.4, 3.4, 1.2], [1, -4.2, 1.2], [-2, 4.2, 1.2],
+  [-4.6, -0.6, 0.9], [4.5, 4.3, 1.2], [-0.6, 4.6, 0.9], [3.4, -4.6, 1.2], [-4.8, -4.4, 0.9], [-3.9, 2.5, 1], [4.8, 1.8, 1.1], [-2.8, -4.6, 1]]);
+const HOUSES3 = [[-3, -2.6], [-1.8, -3.1], [-0.6, -2.4], [1.4, 2.8], [2.6, 2.3], [0.2, 3.3]].map(([x, z], i) => [...on(3, x, z), i * 0.7, 1]);
+const HOUSES4 = [[-3.5, -2.5], [-2.4, -3.4], [0, 3.6], [-3.6, 3.2]].map(([x, z], i) => [...on(4, x, z), i * 0.9, 1]);
+const PINES6 = inst(6, [[-3.8, 2.2, 1.2], [-3, 3.4, 1.2], [-4.2, 3.6, 1.2], [-4.6, 1.2, 1], [-2.4, 4.4, 1.1]]);
 
 const CO2 = [317, 326, 339, 354, 370, 390, 414, 425];
 
@@ -120,25 +127,18 @@ export default function EraProps({ q = 1, shadows = false }) {
       </Era>
       <Era index={3}>
         {(vis) => (<>
-          {[[-3, -2.6], [-1.8, -3.1], [-0.6, -2.4], [1.4, 2.8], [2.6, 2.3], [0.2, 3.3]].map(([x, z], i) => (
-            <House key={i} position={on(3, x, z)} rotation-y={i * 0.7} />
-          ))}
-          {[[-4, 0.5], [-3.4, 1.6], [3.6, -1.2], [4.2, -2.6], [2.8, -3.6], [-4.4, 3.4], [1, -4.2], [-2, 4.2]].map(([x, z], i) => (
-            <Pine key={i} position={on(3, x, z)} scale={1.2} />
-          ))}
+          <Village items={HOUSES3} shadows={shadows} />
+          <Forest items={PINES3} shadows={shadows} />
           <Particles visibleRef={vis} count={c(80)} area={[2, 2.5, 2]} origin={[-1.8, 1, -2.7]} speed={0.35} color="#c8ccd2" size={0.12} additive={false} opacity={0.5} />
           <Particles visibleRef={vis} count={c(220)} area={[14, 7, 14]} origin={[0, 0, 0]} speed={-0.5} color="#ffffff" size={0.05} additive={false} swirl={0.4} />
           <Windmill position={on(3, 3.8, 0.6)} scale={1.3} rotation-y={-0.6} />
-          {[[-4.6, -0.6], [4.5, 4.3], [-0.6, 4.6], [3.4, -4.6], [-4.8, -4.4]].map(([x, z], i) => (
-            <Pine key={`p2${i}`} position={on(3, x, z)} scale={0.9 + (i % 2) * 0.3} />
-          ))}
           <Birds radius={4.5} y={5} count={5} />
           <Cloud position={[0, 6, -3]} scale={1.2} speed={0.18} />
           <Lake position={[1.6, lakeY(3, 1.6, -1.4, 1.1), -1.4]} radius={1.1} />
-          <Person position={on(3, -1.2, -1.9)} shirt="#7a3b2a" rotation-y={0.6} />
-          <Person position={on(3, 0.4, 0.6)} shirt="#3d5a80" radius={0.7} speed={0.35} />
-          <Person position={on(3, -0.2, 1.2)} shirt="#6b5a2a" radius={0.5} speed={-0.3} hat="#3b2a1d" />
-          <Person position={on(3, 3.0, -0.6)} shirt="#556b2f" rotation-y={-1.2} />
+          <Person position={on(3, -1.2, -1.9)} shirt="#7a3b2a" pants="#4a3b2c" rotation-y={0.6} />
+          <Person position={on(3, 0.4, 0.6)} shirt="#3d5a80" pants="#2b2622" hair="#6b4a2a" radius={0.7} speed={0.35} />
+          <Person position={on(3, -0.2, 1.2)} shirt="#6b5a2a" pants="#3a3a30" radius={0.5} speed={-0.3} hat="#3b2a1d" />
+          <Person position={on(3, 3.0, -0.6)} shirt="#556b2f" pants="#3b2f24" hair="#1e1a16" rotation-y={-1.2} />
           <Dog position={on(3, 0.9, 0.2)} rotation-y={1} />
           <Horse position={on(3, -2.4, 0.2)} rotation-y={0.4} />
           <Horse position={on(3, -1.6, -0.6)} rotation-y={2.2} />
@@ -152,18 +152,16 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Factory position={on(4, 1.5, -1.2)} scale={1.3} />
           <Factory position={on(4, -1.6, 1.6)} scale={1.1} rotation-y={Math.PI / 2} />
           <Factory position={on(4, 3.2, 2.2)} scale={0.9} rotation-y={-0.4} />
-          {[[-3.5, -2.5], [-2.4, -3.4], [0, 3.6], [-3.6, 3.2]].map(([x, z], i) => (
-            <House key={i} position={on(4, x, z)} roof="#5a4038" wall="#7a6656" />
-          ))}
+          <Village items={HOUSES4} roof="#5a4038" wall="#7a6656" shadows={shadows} />
           <Particles visibleRef={vis} count={c(260)} area={[7, 8, 5]} origin={[0.8, 2.5, 0]} speed={0.7} color="#8c8f94" size={0.22} additive={false} opacity={0.45} swirl={0.5} />
           <Particles visibleRef={vis} count={c(140)} area={[16, 4, 16]} origin={[0, 7, 0]} speed={0.12} color="#66d9ef" size={0.06} />
           <Rails radius={6.2} y={0.92} />
           <Train path={6.2} y={0.92} ring={false} />
           <Highway length={11} y={1.0} z={-4.4} vehicles={4} lanes={2} cargo="#141414" />
           {[[2.7, 0.1], [0.3, -0.1], [-0.4, 2.7], [3.6, 3.2]].map(([x, z], i) => (
-            <Person key={`w${i}`} position={on(4, x, z)} shirt="#2f4f6f" hat="#f6b93b" rotation-y={i * 1.3} />
+            <Person key={`w${i}`} position={on(4, x, z)} shirt="#2f4f6f" pants="#1f2a36" hat="#f6b93b" rotation-y={i * 1.3} />
           ))}
-          <Person position={on(4, 1.2, 1.4)} shirt="#2f4f6f" hat="#f6b93b" radius={0.6} speed={0.4} />
+          <Person position={on(4, 1.2, 1.4)} shirt="#2f4f6f" pants="#1f2a36" hat="#f6b93b" radius={0.6} speed={0.4} />
           <Rain visibleRef={vis} count={c(380)} area={[13, 8, 13]} speed={9} wind={0.18} color="#9aa3ab" opacity={0.3} />
           <Particles visibleRef={vis} count={c(120)} area={[5, 6, 4]} origin={[-1.6, 2.5, 1.6]} speed={0.6} color="#6f7277" size={0.25} additive={false} opacity={0.4} swirl={0.4} />
         </>)}
@@ -199,9 +197,7 @@ export default function EraProps({ q = 1, shadows = false }) {
           <CityBlock position={on(6, 3.2, 0.8)} scale={1.3} />
           <CityBlock position={on(6, 1.4, 3.4)} scale={1} rotation-y={1.3} />
           <Glacier position={on(6, -3, -3)} scale={[0.9, 0.6, 0.9]} />
-          {[[-3.8, 2.2], [-3, 3.4], [-4.2, 3.6]].map(([x, z], i) => (
-            <Pine key={i} position={on(6, x, z)} snow={0} scale={1.2} />
-          ))}
+          <Forest items={PINES6} snow={0} shadows={shadows} />
           <Particles visibleRef={vis} count={c(120)} area={[3, 3, 3]} origin={[-3.6, 0.8, 3]} speed={1.1} color="#ff7138" size={0.1} />
           <Particles visibleRef={vis} count={c(160)} area={[16, 3, 16]} origin={[0, 1, 0]} speed={0.25} color="#ff4b45" size={0.05} opacity={0.5} />
           {[[-1.5, -4.2], [0.2, -4.6], [1.9, -4.2]].map(([x, z], i) => (

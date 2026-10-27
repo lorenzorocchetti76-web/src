@@ -63,7 +63,7 @@ export default function Diorama({ n = 18, shadows = false, children }) {
     <group ref={group}>
       <mesh geometry={geo} material={mat} receiveShadow={shadows} />
       <mesh ref={water} rotation-x={-Math.PI / 2}>
-        <planeGeometry args={[120, 120, 160, 160]} />
+        <planeGeometry args={[120, 120, 110, 110]} />
         <meshPhysicalMaterial transparent opacity={0} roughness={0.22} metalness={0} envMapIntensity={0} color="#0e4f63" depthWrite={false} onBeforeCompile={onWaterCompile} />
       </mesh>
       <mesh rotation-x={-Math.PI / 2} position-y={-0.56}>

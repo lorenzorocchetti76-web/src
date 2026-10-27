@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, PerformanceMonitor } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette, ToneMapping } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette, ToneMapping, DepthOfField } from "@react-three/postprocessing";
 import { ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
 import { store, lowPower, prefersReducedMotion } from "@/lib/store";
@@ -12,9 +12,12 @@ import EraProps from "./EraProps";
 import Particles from "./Particles";
 import { Meteors, Ufo, NightSky } from "./Details2";
 import { WINDOW_MATS } from "./Models";
+import { TIME } from "./Kit";
 import { smooth } from "./worldMath";
 
 const D2R = Math.PI / 180;
+// Punto di messa a fuoco della camera (seguito dalla profondità di campo).
+const FOCUS = new THREE.Vector3();
 
 function CameraRig() {
   const { camera, size } = useThree();
@@ -38,6 +41,8 @@ function CameraRig() {
     const k = 1 - Math.exp(-Math.min(dt, 0.1) * (reduced ? 12 : 2.6));
     Object.keys(want).forEach((key) => { cur.current[key] += (want[key] - cur.current[key]) * k; });
     const c = cur.current;
+    TIME.value = state.clock.elapsedTime;
+    FOCUS.set(c.tx, c.ty, c.tz);
     // Camera cinematografica in prospettiva con leggero movimento "a mano".
     const tt = state.clock.elapsedTime;
     const hx = reduced ? 0 : Math.sin(tt * 0.31) * 0.12, hy = reduced ? 0 : Math.sin(tt * 0.23) * 0.08;
@@ -139,8 +144,16 @@ function Atmosphere({ shadows }) {
 }
 
 function Effects() {
+  const dof = useRef();
+  // Sfocato leggero solo sui paesaggi; nello spazio resta tutto nitido (stelle comprese).
+  useFrame(() => {
+    if (!dof.current) return;
+    dof.current.target.copy(FOCUS);
+    dof.current.bokehScale = 2.2 * dioramaWeight(store.progress);
+  });
   return (
     <EffectComposer multisampling={0} enableNormalPass={false} resolutionScale={0.75}>
+      <DepthOfField ref={dof} target={[0, 0, 0]} worldFocusRange={7} bokehScale={2.2} height={480} />
       <Bloom mipmapBlur intensity={0.8} luminanceThreshold={0.62} luminanceSmoothing={0.2} radius={0.65} resolutionScale={0.5} />
       <Vignette eskil={false} offset={0.22} darkness={0.7} />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />

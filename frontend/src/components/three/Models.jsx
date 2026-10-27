@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { VC, VC_GLASS, windMaterial, placeInstances } from "./Kit";
+import { houseGeo, houseWinGeo, pineGeo, factoryGeo, factoryWinGeo, cityGeo, cityWinGeo } from "./Buildings";
 
 // Materiali condivisi delle finestre: l'intensità cresce di notte (aggiornata dal ciclo giorno/notte).
 const win = (color, emissive, k, extra = {}) => {
@@ -76,51 +78,43 @@ export function Glacier(props) {
   );
 }
 
-export function Pine({ snow = 1, ...props }) {
-  const sway = useRef();
-  const seed = useRef(Math.random() * 6.28);
-  useFrame((s) => {
-    if (!sway.current) return;
-    const t = s.clock.elapsedTime;
-    sway.current.rotation.z = Math.sin(t * 1.4 + seed.current) * 0.05 + Math.sin(t * 3.1 + seed.current) * 0.015;
-    sway.current.rotation.x = Math.cos(t * 1.1 + seed.current) * 0.025;
-  });
+const WIND = windMaterial();
+
+// Singola conifera (galleria). Nell'esperienza si usa <Forest>, instanziato.
+export const Pine = ({ snow = 1, ...props }) => <mesh geometry={pineGeo(snow)} material={WIND} castShadow {...props} />;
+
+// Bosco instanziato: N alberi = 1 draw call, vento calcolato in GPU.
+export function Forest({ items, snow = 1, shadows = true }) {
   return (
-    <group {...props}>
-      <mesh position-y={0.15}><cylinderGeometry args={[0.05, 0.06, 0.3, 5]} /><meshStandardMaterial color="#3b2a1d" /></mesh>
-      <group ref={sway} position-y={0.25}>
-        <mesh castShadow position-y={0.3}><coneGeometry args={[0.28, 0.75, 6]} /><meshStandardMaterial color={snow ? "#5c7f6d" : "#2f5a3a"} flatShading /></mesh>
-        {snow ? <mesh position-y={0.57}><coneGeometry args={[0.13, 0.25, 6]} /><meshStandardMaterial color="#f4f7fa" flatShading /></mesh> : null}
-      </group>
-    </group>
+    <instancedMesh key={items.length} args={[pineGeo(snow), WIND, items.length]} castShadow={shadows}
+      ref={(m) => placeInstances(m, items, true)} />
   );
 }
 
 export function House({ roof = "#e9eef2", wall = "#8a6b52", ...props }) {
   return (
     <group {...props}>
-      <mesh castShadow receiveShadow position-y={0.25}><boxGeometry args={[0.6, 0.5, 0.45]} /><meshStandardMaterial color={wall} roughness={0.9} /></mesh>
-      <mesh castShadow position-y={0.66} rotation-y={Math.PI / 4}><coneGeometry args={[0.48, 0.4, 4]} /><meshStandardMaterial color={roof} flatShading /></mesh>
-      <mesh position={[0.18, 0.75, 0]}><boxGeometry args={[0.09, 0.3, 0.09]} /><meshStandardMaterial color="#4a3a30" /></mesh>
-      <mesh position={[0, 0.25, 0.23]} material={HOUSE_WIN}><planeGeometry args={[0.12, 0.12]} /></mesh>
-      <mesh position={[0.31, 0.25, 0]} rotation-y={Math.PI / 2} material={HOUSE_WIN}><planeGeometry args={[0.1, 0.12]} /></mesh>
+      <mesh geometry={houseGeo(roof, wall)} material={VC} castShadow receiveShadow />
+      <mesh geometry={houseWinGeo()} material={HOUSE_WIN} />
     </group>
+  );
+}
+
+// Villaggio instanziato: case e finestre in 2 draw call totali.
+export function Village({ items, roof, wall, shadows = true }) {
+  return (
+    <>
+      <instancedMesh args={[houseGeo(roof, wall), VC, items.length]} castShadow={shadows} receiveShadow ref={(m) => placeInstances(m, items, true)} />
+      <instancedMesh args={[houseWinGeo(), HOUSE_WIN, items.length]} ref={(m) => placeInstances(m, items)} />
+    </>
   );
 }
 
 export function Factory(props) {
   return (
     <group {...props}>
-      <mesh castShadow receiveShadow position-y={0.45}><boxGeometry args={[1.6, 0.9, 0.9]} /><meshStandardMaterial color="#6b3324" roughness={0.9} /></mesh>
-      {[-0.5, 0, 0.5].map((x) => (
-        <mesh key={x} castShadow position={[x, 1.0, 0]} rotation-z={Math.PI / 4}><boxGeometry args={[0.38, 0.38, 0.88]} /><meshStandardMaterial color="#3e2a24" flatShading /></mesh>
-      ))}
-      {[-0.55, 0.55].map((x) => (
-        <mesh key={x} castShadow position={[x, 1.4, -0.25]}><cylinderGeometry args={[0.1, 0.14, 1.9, 8]} /><meshStandardMaterial color="#4a2a20" /></mesh>
-      ))}
-      {[-0.6, -0.2, 0.2, 0.6].map((x) => (
-        <mesh key={x} position={[x, 0.45, 0.452]} material={FACTORY_WIN}><planeGeometry args={[0.18, 0.3]} /></mesh>
-      ))}
+      <mesh geometry={factoryGeo()} material={VC} castShadow receiveShadow />
+      <mesh geometry={factoryWinGeo()} material={FACTORY_WIN} />
     </group>
   );
 }
@@ -143,16 +137,11 @@ export function Molecule({ spin = true, ...props }) {
   );
 }
 
-const TOWERS = [[0, 0, 1.6], [0.55, 0.1, 1.1], [-0.5, 0.2, 2.1], [0.1, 0.65, 0.9], [-0.45, -0.5, 1.3], [0.6, -0.55, 1.8], [-0.05, -0.15, 2.5]];
 export function CityBlock(props) {
   return (
     <group {...props}>
-      {TOWERS.map(([x, z, h], i) => (
-        <group key={i} position={[x, 0, z]}>
-          <mesh castShadow receiveShadow position-y={h / 2}><boxGeometry args={[0.36, h, 0.36]} /><meshStandardMaterial color="#c3d2de" roughness={0.3} metalness={0.25} /></mesh>
-          <mesh position={[0, h * 0.55, 0.181]} material={CITY_WIN}><planeGeometry args={[0.24, h * 0.8]} /></mesh>
-        </group>
-      ))}
+      <mesh geometry={cityGeo()} material={VC_GLASS} castShadow receiveShadow />
+      <mesh geometry={cityWinGeo()} material={CITY_WIN} />
     </group>
   );
 }

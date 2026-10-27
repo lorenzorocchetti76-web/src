@@ -171,7 +171,7 @@ export function Rocks({ count = 26, spread = 6.5, color = "#6b6058", groundY }) 
 }
 
 const AURORA_V = `varying vec2 vUv; uniform float uTime; void main(){ vUv=uv; vec3 p=position; p.z+=sin(p.x*0.6+uTime*0.6)*0.6; p.y+=sin(p.x*0.3+uTime*0.4)*0.3; gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`;
-const AURORA_F = `varying vec2 vUv; uniform float uTime; void main(){ float a=smoothstep(0.0,0.4,vUv.y)*smoothstep(1.0,0.5,vUv.y); float band=0.5+0.5*sin(vUv.x*24.0+uTime*1.5); vec3 c=mix(vec3(0.2,1.0,0.6),vec3(0.4,0.85,1.0),vUv.y); gl_FragColor=vec4(c,a*(0.25+0.35*band)); }`;
+const AURORA_F = `varying vec2 vUv; uniform float uTime; void main(){ float a=smoothstep(0.0,0.4,vUv.y)*smoothstep(1.0,0.5,vUv.y)*smoothstep(0.0,0.25,vUv.x)*smoothstep(1.0,0.75,vUv.x); float band=0.5+0.5*sin(vUv.x*24.0+uTime*1.5); vec3 c=mix(vec3(0.2,1.0,0.6),vec3(0.4,0.85,1.0),vUv.y); gl_FragColor=vec4(c,a*(0.25+0.35*band)); }`;
 
 export function Aurora(props) {
   const u = useMemo(() => ({ uTime: { value: 0 } }), []);

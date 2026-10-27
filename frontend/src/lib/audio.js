@@ -32,49 +32,57 @@ class AudioEngine {
     this.ctx = new Ctx();
     this.master = this.ctx.createGain();
     this.master.gain.value = 0;
-    this.master.connect(this.ctx.destination);
+    // Catena pulita: filtro anti-sibilo + limitatore morbido, evita clipping e fruscio.
+    const tone = this.ctx.createBiquadFilter(); tone.type = "lowpass"; tone.frequency.value = 5200; tone.Q.value = 0.5;
+    const comp = this.ctx.createDynamicsCompressor();
+    comp.threshold.value = -18; comp.knee.value = 12; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
+    this.master.connect(tone).connect(comp).connect(this.ctx.destination);
   }
 
-  // Pioggia morbida: rumore molto filtrato + gocce leggere, attiva solo nelle scene piovose.
+  // Pioggia morbida: rumore marrone molto filtrato (niente sibilo) con giunzione del loop sfumata.
   ensureRain() {
     if (this.rain || !this.ctx) return;
     const ctx = this.ctx;
-    const len = ctx.sampleRate * 3;
+    const len = ctx.sampleRate * 4;
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
     const d = buf.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0;
+    let last = 0;
     for (let i = 0; i < len; i++) {
-      const w = Math.random() * 2 - 1;
-      b0 = 0.99765 * b0 + w * 0.099; b1 = 0.963 * b1 + w * 0.2965; b2 = 0.57 * b2 + w * 1.0526;
-      d[i] = (b0 + b1 + b2 + w * 0.1848) * 0.12;
+      last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+      d[i] = last * 3.2;
+    }
+    const fade = Math.floor(ctx.sampleRate * 0.5);
+    for (let i = 0; i < fade; i++) {
+      const k = i / fade;
+      d[i] = d[i] * k + d[len - fade + i] * (1 - k);
     }
     const src = ctx.createBufferSource();
-    src.buffer = buf; src.loop = true;
-    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 500;
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2200;
+    src.buffer = buf; src.loopStart = 0; src.loopEnd = (len - fade) / ctx.sampleRate; src.loop = true;
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 180;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1100; lp.Q.value = 0.4;
     const gain = ctx.createGain(); gain.gain.value = 0;
     src.connect(hp).connect(lp).connect(gain).connect(this.master);
     src.start();
     this.rain = { gain, amt: 0 };
     this.dropTimer = setInterval(() => {
       if (!this.enabled || !this.rain.amt) return;
-      for (let k = 0; k < 2; k++) if (Math.random() < 0.6) this.drop();
-    }, 140);
+      if (Math.random() < 0.45) this.drop();
+    }, 180);
   }
 
   drop() {
-    const t = this.ctx.currentTime + Math.random() * 0.12;
+    const t = this.ctx.currentTime + 0.02 + Math.random() * 0.12;
     const o = this.ctx.createOscillator();
     const g = this.ctx.createGain();
     o.type = "sine";
-    const f = 1800 + Math.random() * 2200;
+    const f = 900 + Math.random() * 900;
     o.frequency.setValueAtTime(f, t);
-    o.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.05);
+    o.frequency.exponentialRampToValueAtTime(f * 0.7, t + 0.07);
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.012 * this.rain.amt, t + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    g.gain.exponentialRampToValueAtTime(0.006 * this.rain.amt, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
     o.connect(g).connect(this.master);
-    o.start(t); o.stop(t + 0.08);
+    o.start(t); o.stop(t + 0.1);
   }
 
   updateRain(i) {
@@ -82,7 +90,7 @@ class AudioEngine {
     if (!amt && !this.rain) return;
     this.ensureRain();
     this.rain.amt = amt;
-    this.rain.gain.gain.setTargetAtTime(amt * 0.09, this.ctx.currentTime, 1.2);
+    this.rain.gain.gain.setTargetAtTime(amt * 0.11, this.ctx.currentTime, 1.2);
   }
 
   async toggle(force) {
@@ -123,10 +131,10 @@ class AudioEngine {
     trem.gain.value = 0.8;
     lfoGain.connect(trem.gain);
     trem.connect(out);
-    p.tones.forEach(([f, type, g]) => {
+    p.tones.forEach(([f, , g]) => {
       const o = ctx.createOscillator();
       const og = ctx.createGain();
-      o.type = type; o.frequency.value = f; o.detune.value = Math.random() * 4 - 2;
+      o.type = "sine"; o.frequency.value = f; o.detune.value = Math.random() * 4 - 2;
       og.gain.value = g;
       o.connect(og).connect(trem);
       nodes.push(o);
@@ -144,8 +152,8 @@ class AudioEngine {
     const t = this.ctx.currentTime;
     const old = this.layer;
     if (old) {
-      old.out.gain.setTargetAtTime(0, t, 0.6);
-      setTimeout(() => { old.nodes.forEach((x) => { try { x.stop(); } catch (e) { /* noop */ } }); old.out.disconnect(); }, 3500);
+      old.out.gain.setTargetAtTime(0, t, 0.4);
+      setTimeout(() => { old.nodes.forEach((x) => { try { x.stop(); } catch (e) { /* noop */ } }); old.out.disconnect(); }, 4000);
     }
     this.layer = this.buildLayer(i);
     this.layer.out.gain.setTargetAtTime(1, t, 0.8);
