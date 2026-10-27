@@ -1,0 +1,197 @@
+{
+  "project_title": "EARTH THROUGH TIME - Il Clima Attraverso il Tempo",
+  "credit": "Produced by Studio Rocchetti Comunicazione",
+  "language": "Italian (it-IT)",
+  "app_type": "3D Experience Landing + Interactive 3D Model Gallery + Accessible Text Reading Route + Admin Analytics Dashboard",
+  "theme": "Editorial Cinematic Science Dark Theme",
+  "user_choices": {
+    "palette": {
+      "deep_black": "#080B10",
+      "night_blue": "#101D30",
+      "ice_white": "#F4F7FA",
+      "scientific_cyan": "#66D9EF",
+      "magma_orange": "#FF7138",
+      "thermal_red": "#FF4B45"
+    },
+    "typography": "Contemporary sans serif with compact ultra-readable display titles, geometric numbers, and crisp editorial tracking.",
+    "art_direction": "Awwwards-level cinematic editorial design. Discreet minimalist UI floating over isometric 3D scenes. Text reveals using masks, bottom slides, and progressive opacity.",
+    "final_message": "IL CLIMA È SEMPRE CAMBIATO. OGGI, A CAMBIARE IL RITMO, SIAMO NOI."
+  },
+  "typography": {
+    "heading_font_family": "Plus Jakarta Sans, Syne, sans-serif",
+    "body_font_family": "Inter, system-ui, sans-serif",
+    "mono_font_family": "JetBrains Mono, monospace",
+    "hierarchy": {
+      "hero_h1": "text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none uppercase",
+      "section_h2": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight",
+      "scene_title": "text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white drop-shadow-md",
+      "scene_subtitle": "text-lg sm:text-xl font-medium tracking-wide text-[#66D9EF]",
+      "number_stat": "font-mono text-3xl sm:text-5xl font-extrabold tracking-tighter text-[#FF7138]",
+      "body_text": "text-base sm:text-lg text-[#F4F7FA]/90 leading-relaxed font-normal",
+      "caption_meta": "font-mono text-xs sm:text-sm uppercase tracking-widest text-[#66D9EF]/80"
+    }
+  },
+  "colors": {
+    "background_base": "#080B10",
+    "surface_dark": "#101D30",
+    "surface_glass": "rgba(16, 29, 48, 0.75)",
+    "surface_border": "rgba(102, 217, 239, 0.2)",
+    "text_primary": "#F4F7FA",
+    "text_muted": "rgba(244, 247, 250, 0.65)",
+    "brand_cyan": "#66D9EF",
+    "brand_magma": "#FF7138",
+    "brand_thermal": "#FF4B45",
+    "brand_ice": "#F4F7FA",
+    "accent_glow": "rgba(255, 113, 56, 0.3)"
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-md bg-[#101D30]/75 border border-[#66D9EF]/20 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "scene_overlay_mask": "bg-gradient-to-t from-[#080B10] via-transparent to-[#080B10]/40 pointer-events-none",
+    "glow_cyan": "shadow-[0_0_20px_rgba(102,217,239,0.35)]",
+    "glow_magma": "shadow-[0_0_25px_rgba(255,113,56,0.45)]",
+    "micro_borders": "border border-white/10 hover:border-[#66D9EF]/50 transition-all duration-300"
+  },
+  "seven_scroll_scenes": [
+    {
+      "id": "scene_01",
+      "era": "4.5 Ga (Miliardi di Anni Fa)",
+      "title": "01. NASCITA DELLA TERRA",
+      "subtitle": "Un Pianeta Infernale in Fusione",
+      "scientific_summary": "La Terra primitiva era un oceano di magma vulcanico sferzato da meteoriti, con un'atmosfera tossica ricca di anidride carbonica, vapore acqueo e azoto.",
+      "visual_3d": "Isometric lava terrain with boiling magma pools, volcanic vents, floating smoke clouds, glowing particle embers, orange-red point lights.",
+      "color_theme": "#FF7138",
+      "sound_preset": "deep_magma_rumble"
+    },
+    {
+      "id": "scene_02",
+      "era": "2.5 Ga (Miliardi di Anni Fa)",
+      "title": "02. LA GRANDE OSSIDAZIONE",
+      "subtitle": "L'Alba dell'Oceano e dei Cianobatteri",
+      "scientific_summary": "I primi microorganismi fotosintetici (cianobatteri) iniziano a rilasciare ossigeno libero, trasformando la chimica degli oceani e precipitando il ferro disciolto.",
+      "visual_3d": "Cyan ocean waters with microbial mats, underwater bubbles rising, banded iron formation structures, oceanic sunlight rays.",
+      "color_theme": "#66D9EF",
+      "sound_preset": "oceanic_hydro_hum"
+    },
+    {
+      "id": "scene_03",
+      "era": "2.4 Ga – 11.7 ka",
+      "title": "03. CICLI GLACIALI E TERRA PALLA DI NEVE",
+      "subtitle": "I Ritmi Orbitali di Milankovitch",
+      "scientific_summary": "La Terra attraversa drammatiche ere glaciali alternate a periodi interglaciali, guidata dall'eccentricità dell'orbita terrestre e dai feedback dell'albedo polare.",
+      "visual_3d": "Isometric frozen ice sheet, crystalline glacier formations, drifting snow particles, pale blue frosty lighting, aurora borealis sky shaders.",
+      "color_theme": "#F4F7FA",
+      "sound_preset": "glacial_wind_drone"
+    },
+    {
+      "id": "scene_04",
+      "era": "1400 – 1800 d.C.",
+      "title": "04. PICCOLA L'ETÀ GLACIALE",
+      "subtitle": "I Fiumi Ghiacciati dell'Europa Medievale",
+      "scientific_summary": "La riduzione dell'attività solare (Minimo di Maunder) ed eruzioni vulcaniche portano a secoli di inverni rigidi con fiumi europei come il Tamigi e il Po completamente congelati.",
+      "visual_3d": "Low-poly medieval timber village with snow-covered roofs, frozen river, smoke from stone chimneys, pine trees in winter coat.",
+      "color_theme": "#88B0C8",
+      "sound_preset": "crackling_wood_frost"
+    },
+    {
+      "id": "scene_05",
+      "era": "1850 d.C.",
+      "title": "05. RIVOLUZIONE INDUSTRIALE",
+      "subtitle": "L'Inizio dell'Impronta Antropica",
+      "scientific_summary": "L'invenzione del motore a vapore e lo sfruttamento massiccio del carbone rilasciano nel ciclo del carbonio CO2 fossile rimasta intrappolata per centinaia di milioni di anni.",
+      "visual_3d": "Brick factory complexes, smoking industrial chimneys, mechanical steam gears turning, dark smoke plumes ascending into atmosphere.",
+      "color_theme": "#B89685",
+      "sound_preset": "industrial_steam_piston"
+    },
+    {
+      "id": "scene_06",
+      "era": "1824 – 1988 d.C.",
+      "title": "06. LA SCIENZA DELL'EFFETTO SERRA",
+      "subtitle": "Da Fourier a Hansen: I Pionieri del Clima",
+      "scientific_summary": "Joseph Fourier (1824), Eunice Foote (1856), Svante Arrhenius (1896) e James Hansen (1988 alla NASA) dimostrano la fisica delle molecole di CO2 e CH4 nel trattenere il calore infrarosso.",
+      "visual_3d": "Abstract molecular grid of CO2 and H2O molecules absorbing thermal infrared photons, scientific data graphs floating in 3D space.",
+      "color_theme": "#66D9EF",
+      "sound_preset": "scientific_pulse_synth"
+    },
+    {
+      "id": "scene_07",
+      "era": "Oggi (2026)",
+      "title": "07. IL PIANETA CONTEMPORANEO",
+      "subtitle": "+1.1°C – +1.3°C Rispetto al Periodo Pre-Industriale",
+      "scientific_summary": "Gli attuali livelli di CO2 (oltre 420 ppm) causano un riscaldamento senza precedenti storici negli ultimi 2.000 anni, alterando correnti oceaniche e ghiacciai polari.",
+      "visual_3d": "High-detail isometric Earth globe with thermal gradient overlays (+1.3°C anomalies in red), extreme weather vortexes, real-time CO2 counters.",
+      "color_theme": "#FF4B45",
+      "sound_preset": "thermal_warning_ambient"
+    }
+  ],
+  "components_structure": {
+    "Header": {
+      "path": "src/components/Header.jsx",
+      "elements": [
+        "Logo / Title: EARTH THROUGH TIME",
+        "Current Active Scene Badge (e.g. 'SCENA 03/07 - CICLI GLACIALI')",
+        "Timeline Modal Trigger Button",
+        "Text Route (Modalità Lettura) Toggle",
+        "3D Model Gallery Viewer Toggle",
+        "Sound Toggle (Audio Ambient + Interaction SFX)",
+        "Reset View / Camera Recenter Button",
+        "Admin Dashboard Link"
+      ]
+    },
+    "SceneScrollCanvas": {
+      "path": "src/components/SceneScrollCanvas.jsx",
+      "description": "Scroll-driven WebGL Canvas rendering isometric 3D scenes with camera transition interpolation, lighting changes, fog effects, and particle systems per scene."
+    },
+    "TextRevealOverlay": {
+      "path": "src/components/TextRevealOverlay.jsx",
+      "description": "Floating overlay positioned at bottom/side of screen so 3D content stays visible. Animated reveals using Framer Motion (bottom rise, opacity mask, staggered paragraphs)."
+    },
+    "InteractiveTimeline": {
+      "path": "src/components/InteractiveTimeline.jsx",
+      "description": "Non-linear timeline scrubber modal/drawer allowing jumps to any era (4.5 Ga, 2.5 Ga, Ice Ages, Maunder Minimum, 1850, Science, 2026)."
+    },
+    "TextReadingRoute": {
+      "path": "src/components/TextReadingRoute.jsx",
+      "description": "Full-screen accessible reading mode presenting all 7 scenes as a rich structured scientific paper with interactive charts, references, and audio controls."
+    },
+    "ModelGalleryViewer": {
+      "path": "src/components/ModelGalleryViewer.jsx",
+      "description": "Isolated interactive 3D model inspector modal where users select models (e.g. Magma Volcano, Cyanobacteria Cell, Glacial Ice Block, Steam Engine, CO2 Molecule, Digital Warming Globe) to orbit, zoom, pan, and read deep specs."
+    },
+    "SoundEngine": {
+      "path": "src/components/SoundEngine.jsx",
+      "description": "Web Audio API procedural sound synthesizer producing ambient drones per scene and interaction click/hover SFX. Off by default."
+    },
+    "SourcesSection": {
+      "path": "src/components/SourcesSection.jsx",
+      "description": "Footer section citing IPCC AR6, NASA Global Climate Change, NOAA Earth System Research Laboratories, and WMO climate records."
+    },
+    "AdminDashboard": {
+      "path": "src/components/AdminDashboard.jsx",
+      "description": "Protected admin area behind password login featuring interactive analytics charts (scene dropoffs, user scroll time, mode preferences) and real-time WebGL error log table."
+    }
+  },
+  "image_urls": {
+    "space_earth_hero": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "earth_night_lights": "https://images.unsplash.com/photo-1663427929917-333d88949f7a?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "volcanic_magma": "https://images.unsplash.com/photo-1619266465172-02a857c3556d?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "glacial_ice": "https://images.unsplash.com/photo-1593429741141-0571ce6223b3?crop=entropy&cs=srgb&fm=jpg&q=85"
+  },
+  "instructions_to_main_agent": [
+    "Build a production-ready, fully interactive React 19 web application in Italian for 'EARTH THROUGH TIME' (Studio Rocchetti Comunicazione).",
+    "Ensure all 7 scenes are fully scroll-driven with smooth camera and 3D visual transitions. If WebGL context is lost or unsupported, gracefully fall back to procedural 2D/Canvas animated scenes without breaking UI.",
+    "Implement the exact user-provided color palette (#080B10, #101D30, #F4F7FA, #66D9EF, #FF7138, #FF4B45). Never use default generic bright blue.",
+    "Position text reveal overlays at bottom or side margins to NEVER obscure the core 3D scene focal point.",
+    "Include a visible header with: scene indicator, Timeline scrubber modal trigger, Sound on/off toggle (Web Audio API synth + interaction clicks), Reset View button, Text Route ('Modalità Lettura') toggle, 3D Model Gallery trigger, and Admin Login link.",
+    "Provide a full accessible Text Reading Mode ('Modalità Lettura') with exact scientific parity to the 3D scroll route.",
+    "Implement an isolated 3D Model Gallery Viewer modal with orbit, pan, zoom, model switcher, and scientific stats.",
+    "Build the Admin Analytics & Error-Log Dashboard with passcode auth ('climate2026'), Recharts/Shadcn data visualizations (scene engagement duration, mode selection ratios), and interactive WebGL error log filter.",
+    "Add scientific references (IPCC AR6, NASA GISS, NOAA, WMO) and credit footer: 'Prodotto da Studio Rocchetti Comunicazione'.",
+    "Ensure mandatory data-testid attributes on all interactive elements: buttons, toggles, timeline markers, navigation items, modal controls, and inputs.",
+    "Respect prefers-reduced-motion and ensure complete keyboard accessibility (tabbing, Esc to close modals, clear visible focus rings)."
+  ],
+  "accessibility_and_performance": {
+    "data_testid_convention": "kebab-case identifier matching role (e.g., data-testid='header-timeline-button', data-testid='scene-indicator-badge', data-testid='sound-toggle-button', data-testid='reading-mode-toggle', data-testid='model-gallery-button', data-testid='reset-camera-button', data-testid='admin-login-button')",
+    "webgl_fallback": "Includes automatic performance detection; falls back to animated canvas/2D depth layers if WebGL is unavailable or low FPS detected.",
+    "keyboard_navigation": "Full focus ring styling (`focus-visible:ring-2 focus-visible:ring-[#66D9EF]`), ESC key listener for all modals and drawers."
+  }
+}
