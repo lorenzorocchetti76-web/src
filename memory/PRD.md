@@ -51,6 +51,10 @@
 - Titoli su smartphone ridotti ~13% (scene, hero, frase finale)
 - In attesa di conferma: passaggio da stile isometrico a iperrealistico/cinematografico
 
+## Iterazione 7 (2026-10-27)
+- Stile iperrealistico/cinematografico: camera prospettica fov 35 con movimento a mano, terreno continuo (heightfield GPU con dettagli, rocce sui pendii, lava emissiva), oceano fino all'orizzonte, cielo con gradiente/alone solare/stelle notturne, nebbia atmosferica
+- Modelli (case, persone, animali, fabbriche) ancora low-poly
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

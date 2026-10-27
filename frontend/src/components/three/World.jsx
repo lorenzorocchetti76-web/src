@@ -5,7 +5,7 @@ import { EffectComposer, Bloom, Vignette, ToneMapping } from "@react-three/postp
 import { ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
 import { store, lowPower, prefersReducedMotion } from "@/lib/store";
-import { CAMERA_KEYS, ATMOS, ease, clamp01, lerp } from "./worldMath";
+import { CAMERA_KEYS, ATMOS, ease, clamp01, lerp, dioramaWeight } from "./worldMath";
 import Globe from "./Globe";
 import Diorama from "./Diorama";
 import EraProps from "./EraProps";
@@ -38,15 +38,41 @@ function CameraRig() {
     const k = 1 - Math.exp(-Math.min(dt, 0.1) * (reduced ? 12 : 2.6));
     Object.keys(want).forEach((key) => { cur.current[key] += (want[key] - cur.current[key]) * k; });
     const c = cur.current;
-    // Proiezione ortografica isometrica: la "distanza" diventa zoom, la camera resta lontana e fissa in raggio.
-    const R = 120;
-    const r = R * Math.cos(c.el * D2R);
-    camera.position.set(c.tx + r * Math.sin(c.az * D2R), c.ty + R * Math.sin(c.el * D2R), c.tz + r * Math.cos(c.az * D2R));
+    // Camera cinematografica in prospettiva con leggero movimento "a mano".
+    const tt = state.clock.elapsedTime;
+    const hx = reduced ? 0 : Math.sin(tt * 0.31) * 0.12, hy = reduced ? 0 : Math.sin(tt * 0.23) * 0.08;
+    const r = c.d * Math.cos(c.el * D2R);
+    camera.position.set(c.tx + r * Math.sin(c.az * D2R) + hx, c.ty + c.d * Math.sin(c.el * D2R) + hy, c.tz + r * Math.cos(c.az * D2R));
     camera.lookAt(c.tx, c.ty, c.tz);
-    const zoom = size.height / (0.536 * c.d);
-    if (Math.abs(camera.zoom - zoom) > 0.01) { camera.zoom = zoom; camera.updateProjectionMatrix(); }
   });
   return null;
+}
+
+// Cielo con gradiente orizzonte/zenit e alone solare; trasparente nello spazio (globo).
+export const SKY_U = {
+  uTop: { value: new THREE.Color() }, uHor: { value: new THREE.Color() }, uSunDir: { value: new THREE.Vector3(0, 1, 0) },
+  uSunCol: { value: new THREE.Color("#ffd9a0") }, uAlpha: { value: 0 }, uNight: { value: 0 },
+};
+const SKY_V = `varying vec3 vD; void main(){ vD=normalize(position); vec4 w=modelMatrix*vec4(position,1.0); gl_Position=projectionMatrix*viewMatrix*w; }`;
+const SKY_F = `uniform vec3 uTop; uniform vec3 uHor; uniform vec3 uSunDir; uniform vec3 uSunCol; uniform float uAlpha; uniform float uNight; varying vec3 vD;
+float hs(vec3 p){ p=fract(p*0.3183099+0.1); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+void main(){ vec3 d=normalize(vD); float h=d.y;
+ vec3 col=mix(uHor,uTop,smoothstep(-0.02,0.5,h));
+ col=mix(col,uHor,smoothstep(0.0,-0.25,h));
+ float s=max(dot(d,normalize(uSunDir)),0.0);
+ col+=uSunCol*(pow(s,600.0)*2.0+pow(s,12.0)*0.35);
+ float st=step(0.9975,hs(floor(d*420.0)))*smoothstep(0.02,0.25,h);
+ col+=vec3(0.9,0.95,1.0)*st*uNight*1.4;
+ gl_FragColor=vec4(col,uAlpha); }`;
+function Sky() {
+  const ref = useRef();
+  useFrame(({ camera }) => { ref.current.position.copy(camera.position); ref.current.visible = SKY_U.uAlpha.value > 0.01; });
+  return (
+    <mesh ref={ref} renderOrder={-1}>
+      <sphereGeometry args={[170, 32, 16]} />
+      <shaderMaterial vertexShader={SKY_V} fragmentShader={SKY_F} uniforms={SKY_U} side={THREE.BackSide} transparent depthWrite={false} fog={false} />
+    </mesh>
+  );
 }
 
 const tmp = new THREE.Color();
@@ -55,6 +81,10 @@ const DAWN = new THREE.Color("#ff9a5a");
 const MOON = new THREE.Color("#8fa8ff");
 const SKY = new THREE.Color("#cfe9ff");
 const NIGHT_SKY = new THREE.Color("#3a4c80");
+const DAY_TOP = new THREE.Color("#2f5f99");
+const NIGHT_TOP = new THREE.Color("#03070f");
+const DAY_HOR = new THREE.Color("#cddbe5");
+const NIGHT_HOR = new THREE.Color("#0e1626");
 function Atmosphere({ shadows }) {
   const { scene } = useThree();
   const dir = useRef();
@@ -79,6 +109,18 @@ function Atmosphere({ shadows }) {
     amb.current.color.copy(SKY).lerp(NIGHT_SKY, night);
     const glow = 0.15 + Math.max(night, (1 - sunEl) * 0.35) * 3.2;
     WINDOW_MATS.forEach((m) => { m.emissiveIntensity = glow * m.userData.k; });
+    const dw = dioramaWeight(p);
+    const day = sunEl * (1 - night);
+    SKY_U.uTop.value.copy(NIGHT_TOP).lerp(DAY_TOP, day).lerp(A.bg, 0.3);
+    SKY_U.uHor.value.copy(NIGHT_HOR).lerp(DAY_HOR, day).lerp(DAWN, (1 - sunEl) * 0.45 * (1 - night)).lerp(tmp, 0.15);
+    SKY_U.uSunDir.value.copy(dir.current.position).normalize();
+    SKY_U.uSunCol.value.set("#ffd9a0").multiplyScalar(1 - night);
+    SKY_U.uAlpha.value = dw;
+    SKY_U.uNight.value = night;
+    if (!scene.fog) scene.fog = new THREE.FogExp2("#000000", 0);
+    scene.fog.color.copy(SKY_U.uHor.value);
+    scene.fog.density = 0.03 * dw;
+    scene.background.set("#05070b");
   });
   return (
     <>
@@ -151,16 +193,16 @@ export default function World({ onReady }) {
   return (
     <Canvas
       data-testid="world-canvas"
-      orthographic
       shadows={shadows}
       dpr={low ? [1, 1.25] : degraded ? 1 : [1, 1.5]}
       gl={{ antialias: low, powerPreference: "high-performance", alpha: false, stencil: false }}
-      camera={{ zoom: 40, near: 0.1, far: 400, position: [0, 40, 110] }}
+      camera={{ fov: 35, near: 0.1, far: 500, position: [0, 4, 16] }}
       onCreated={({ gl }) => { gl.toneMapping = low ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping; onReady?.(); }}
     >
       <PerformanceMonitor onDecline={() => setDegraded(true)} flipflops={2} />
       <Atmosphere shadows={shadows && !degraded} />
       <Precompile />
+      <Sky />
       <CameraRig />
       <Stars q={q} />
       <SpaceExtras />

@@ -92,7 +92,7 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Stromatolites position={on(1, -2.4, 2.2)} scale={1.2} />
           <Stromatolites position={on(1, 2.8, -1.8)} scale={1} rotation-y={1} />
           <Stromatolites position={on(1, 0.3, -3.6)} scale={0.9} rotation-y={2} />
-          <Particles visibleRef={vis} count={c(180)} area={[12, 1.6, 12]} origin={[0, 0.1, 0]} speed={0.45} color="#bff3ff" size={0.07} />
+          <Particles visibleRef={vis} count={c(180)} area={[12, 1.6, 12]} origin={[0, 0.1, 0]} speed={0.45} color="#bff3ff" size={0.04} opacity={0.4} />
           <Stromatolites position={on(1, -4, -0.8)} scale={0.7} rotation-y={3} />
           <Stromatolites position={on(1, 4, 3.6)} scale={0.8} rotation-y={0.4} />
           <Rocks count={c(24)} color="#4a4038" groundY={(x, z) => groundY(1, x, z)} />
