@@ -8,7 +8,7 @@ export const Preloader = ({ done }) => {
     const id = setInterval(() => setN((v) => Math.min(done ? 100 : 92, v + (done ? 9 : Math.random() * 7))), 60);
     return () => clearInterval(id);
   }, [done]);
-  const show = !(done && n >= 100);
+  const show = !done;
   return (
     <AnimatePresence>
       {show && (

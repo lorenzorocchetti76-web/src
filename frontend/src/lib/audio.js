@@ -10,6 +10,9 @@ const PRESETS = [
   { tones: [[87.3, "sine", 0.1], [130.8, "sine", 0.06], [174.6, "sine", 0.03]], lfo: 0.04 },
 ];
 
+// Scene con pioggia (indice -> intensità): Ossigeno, Industria, Oggi.
+const RAIN = { 1: 0.8, 4: 1, 6: 0.9 };
+
 class AudioEngine {
   ctx = null;
   master = null;
@@ -30,6 +33,56 @@ class AudioEngine {
     this.master = this.ctx.createGain();
     this.master.gain.value = 0;
     this.master.connect(this.ctx.destination);
+  }
+
+  // Pioggia morbida: rumore molto filtrato + gocce leggere, attiva solo nelle scene piovose.
+  ensureRain() {
+    if (this.rain || !this.ctx) return;
+    const ctx = this.ctx;
+    const len = ctx.sampleRate * 3;
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0;
+    for (let i = 0; i < len; i++) {
+      const w = Math.random() * 2 - 1;
+      b0 = 0.99765 * b0 + w * 0.099; b1 = 0.963 * b1 + w * 0.2965; b2 = 0.57 * b2 + w * 1.0526;
+      d[i] = (b0 + b1 + b2 + w * 0.1848) * 0.12;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 500;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2200;
+    const gain = ctx.createGain(); gain.gain.value = 0;
+    src.connect(hp).connect(lp).connect(gain).connect(this.master);
+    src.start();
+    this.rain = { gain, amt: 0 };
+    this.dropTimer = setInterval(() => {
+      if (!this.enabled || !this.rain.amt) return;
+      for (let k = 0; k < 2; k++) if (Math.random() < 0.6) this.drop();
+    }, 140);
+  }
+
+  drop() {
+    const t = this.ctx.currentTime + Math.random() * 0.12;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = "sine";
+    const f = 1800 + Math.random() * 2200;
+    o.frequency.setValueAtTime(f, t);
+    o.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.05);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.012 * this.rain.amt, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    o.connect(g).connect(this.master);
+    o.start(t); o.stop(t + 0.08);
+  }
+
+  updateRain(i) {
+    const amt = RAIN[i] || 0;
+    if (!amt && !this.rain) return;
+    this.ensureRain();
+    this.rain.amt = amt;
+    this.rain.gain.gain.setTargetAtTime(amt * 0.09, this.ctx.currentTime, 1.2);
   }
 
   async toggle(force) {
@@ -87,6 +140,7 @@ class AudioEngine {
     if (i === this.scene && this.layer && !immediate) return;
     this.scene = i;
     if (!this.ctx || !this.enabled) return;
+    this.updateRain(i);
     const t = this.ctx.currentTime;
     const old = this.layer;
     if (old) {

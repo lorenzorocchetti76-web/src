@@ -31,7 +31,7 @@ export default function AdminLogin() {
   return (
     <div data-testid="admin-login-page" className="flex min-h-screen items-center justify-center bg-[#080B10] px-5 text-[#F4F7FA]">
       <form onSubmit={submit} noValidate className="w-full max-w-sm">
-        <Link to="/" className="mb-10 flex items-center gap-3" aria-label="Torna all'esperienza"><Logo /><span className="font-wide text-sm font-bold tracking-[0.18em]">EARTH THROUGH TIME</span></Link>
+        <Link to="/" className="mb-10 flex items-center gap-3" aria-label="Torna all'esperienza"><Logo /><span className="font-display text-base">Punto di non ritorno</span></Link>
         <h1 className="font-display text-4xl font-black uppercase tracking-tight">Area admin</h1>
         <p className="mt-2 text-sm text-[#F4F7FA]/75">Analisi dei dati ed errori in tempo reale.</p>
         <div className="mt-8 space-y-4">

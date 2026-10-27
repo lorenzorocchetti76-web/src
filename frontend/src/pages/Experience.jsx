@@ -67,7 +67,7 @@ export default function Experience() {
         ) : <FallbackBackdrop scene={scene} />}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(8,11,16,0.7)_100%)]" />
       </div>
-      <a href="/" aria-label="Earth Through Time" data-testid="corner-logo" className="fixed left-4 top-4 z-40 sm:left-8 sm:top-6"><Logo className="h-8 w-8" /></a>
+      <a href="/" aria-label="Punto di non ritorno" data-testid="corner-logo" className="fixed left-4 top-4 z-40 sm:left-8 sm:top-6"><Logo className="h-8 w-8" /></a>
       <div className="fixed right-4 top-4 z-40 sm:right-8 sm:top-6" data-testid="corner-audio"><SoundControl /></div>
       <SceneRail current={scene} onJump={onJump} />
       <main className="relative z-10">

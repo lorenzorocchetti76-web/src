@@ -14,11 +14,11 @@ export const Hero = ({ onStart, ready }) => {
   return (
     <section data-testid="hero-section" className="relative flex h-[100svh] flex-col justify-end px-5 pb-10 sm:px-10 lg:px-16">
       <motion.div style={{ y, opacity: op }} initial="hidden" animate={ready ? "show" : "hidden"} className="relative">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#66D9EF]">{SITE.credit} presenta</p>
-        <h1 className="font-display mt-4 text-[15vw] font-black uppercase leading-[0.85] tracking-[-0.04em] text-[#F4F7FA] sm:text-[12vw] lg:text-[10.5vw]">
-          {["Earth", "Through", "Time"].map((w, i) => (
-            <span key={w} className="block overflow-hidden">
-              <motion.span className={`block ${i === 1 ? "pl-[12vw] text-transparent [-webkit-text-stroke:1.5px_#F4F7FA]" : ""} ${i === 2 ? "text-[#FF7138]" : ""}`} variants={reveal} custom={i}>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-white">{SITE.credit} presenta</p>
+        <h1 className="font-display mt-4 text-[15vw] leading-[0.88] text-white sm:text-[12vw] lg:text-[10vw]">
+          {["Punto", "di non", "ritorno"].map((w, i) => (
+            <span key={w} className="block overflow-hidden pb-[0.06em]">
+              <motion.span className={`block ${i === 1 ? "pl-[12vw]" : ""}`} variants={reveal} custom={i}>
                 {w}
               </motion.span>
             </span>
@@ -26,7 +26,7 @@ export const Hero = ({ onStart, ready }) => {
         </h1>
         <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <motion.p variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { delay: 0.9, duration: 1 } } }}
-            className="max-w-md text-base leading-relaxed text-[#F4F7FA]/85 md:text-lg">
+            className="max-w-md text-base leading-relaxed text-white md:text-lg">
             {SITE.tagline}.
           </motion.p>
           <motion.div variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { delay: 1.1 } } }} className="flex flex-wrap items-center gap-3">

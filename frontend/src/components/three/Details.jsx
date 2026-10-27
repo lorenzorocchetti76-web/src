@@ -92,7 +92,7 @@ export function Turbine(props) {
   );
 }
 
-export function Train({ path = 4.6, y = 0.6, ...props }) {
+export function Train({ path = 4.6, y = 0.6, ring = true, ...props }) {
   const g = useRef();
   useFrame((s) => {
     if (!g.current) return;
@@ -102,7 +102,7 @@ export function Train({ path = 4.6, y = 0.6, ...props }) {
   });
   return (
     <group {...props}>
-      <mesh rotation-x={-Math.PI / 2} position-y={y - 0.02}><ringGeometry args={[path - 0.08, path + 0.08, 64]} /><meshStandardMaterial color="#2a2522" /></mesh>
+      {ring && <mesh rotation-x={-Math.PI / 2} position-y={y - 0.02}><ringGeometry args={[path - 0.08, path + 0.08, 64]} /><meshStandardMaterial color="#2a2522" /></mesh>}
       <group ref={g}>
         {[0, -0.55, -1.05].map((z, i) => (
           <mesh key={i} castShadow position={[0, 0.16, z]}>

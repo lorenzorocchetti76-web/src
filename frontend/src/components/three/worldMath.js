@@ -54,7 +54,7 @@ export const ATMOS = [
   { bg: c("#04121a"), light: c("#bfefff"), li: 1.8, amb: 0.55 },
   { bg: c("#0a1622"), light: c("#e8f4ff"), li: 2.1, amb: 0.7 },
   { bg: c("#0b1119"), light: c("#ffe2c4"), li: 1.7, amb: 0.6 },
-  { bg: c("#130c0a"), light: c("#ffb07a"), li: 2.0, amb: 0.6 },
+  { bg: c("#160e0b"), light: c("#ffd2a8"), li: 2.7, amb: 0.95 },
   { bg: c("#060b14"), light: c("#9fe8ff"), li: 1.3, amb: 0.55 },
   { bg: c("#150a07"), light: c("#ffc08a"), li: 2.0, amb: 0.55 },
   { bg: c("#080B10"), light: c("#ffffff"), li: 1.8, amb: 0.35 },

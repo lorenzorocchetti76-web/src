@@ -1,6 +1,6 @@
 {
-  "short_name": "Earth Through Time",
-  "name": "Earth Through Time — Studio Rocchetti Comunicazione",
+  "short_name": "Punto di non ritorno",
+  "name": "Punto di non ritorno — Studio Rocchetti Comunicazione",
   "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "start_url": "/",
   "display": "standalone",

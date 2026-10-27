@@ -11,9 +11,9 @@ export const Header = ({ scene, onTimeline, onReset, onExplore, showScene = true
   return (
     <header data-testid="site-header" className="fixed inset-x-0 top-0 z-40 flex items-center justify-between gap-3 px-4 py-3 sm:px-8 sm:py-5">
       <div className="flex min-w-0 items-center gap-3">
-        <Link to="/" aria-label="Earth Through Time, home" data-testid="header-logo-link" className="flex items-center gap-3">
+        <Link to="/" aria-label="Punto di non ritorno, home" data-testid="header-logo-link" className="flex items-center gap-3">
           <Logo className="h-8 w-8 shrink-0" />
-          <span className="font-wide hidden text-sm font-bold tracking-[0.18em] md:inline">EARTH THROUGH TIME</span>
+          <span className="font-display hidden text-base md:inline">Punto di non ritorno</span>
         </Link>
         {showScene && (
           <div data-testid="current-scene-indicator" aria-live="polite"

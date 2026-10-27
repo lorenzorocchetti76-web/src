@@ -10,6 +10,8 @@ import Globe from "./Globe";
 import Diorama from "./Diorama";
 import EraProps from "./EraProps";
 import Particles from "./Particles";
+import { Meteors, Ufo } from "./Details2";
+import { smooth } from "./worldMath";
 
 const D2R = Math.PI / 180;
 
@@ -91,7 +93,24 @@ function Effects() {
 }
 
 function Stars({ q }) {
-  return <Particles count={Math.round(500 * q)} area={[160, 90, 160]} origin={[0, -30, 0]} speed={0.02} color="#dbe7f5" size={0.06} opacity={0.6} swirl={0} />;
+  return (
+    <>
+      <Particles count={Math.round(1400 * q)} area={[160, 90, 160]} origin={[0, -30, 0]} speed={0.02} color="#dbe7f5" size={0.06} opacity={0.65} swirl={0} />
+      <Particles count={Math.round(160 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#ffffff" size={0.14} opacity={0.9} swirl={0} />
+      <Particles count={Math.round(80 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#9fd8ff" size={0.11} opacity={0.8} swirl={0} />
+    </>
+  );
+}
+
+// Capitolo 1: meteoriti e ufo attorno al pianeta primordiale.
+function SpaceExtras() {
+  const g = useRef();
+  useFrame(() => {
+    const w = 1 - smooth(0.5, 1.1, store.progress);
+    g.current.visible = w > 0.01;
+    g.current.scale.setScalar(Math.max(0.001, w));
+  });
+  return <group ref={g}><Meteors count={10} /><Ufo /></group>;
 }
 
 export default function World({ onReady }) {
@@ -111,6 +130,7 @@ export default function World({ onReady }) {
       <Atmosphere shadows={shadows} />
       <CameraRig />
       <Stars q={q} />
+      <SpaceExtras />
       <Globe segments={low ? 64 : 160} low={low} />
       <Diorama n={low ? 14 : 18} shadows={shadows}>
         <EraProps q={q} shadows={shadows} />

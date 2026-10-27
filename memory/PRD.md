@@ -37,6 +37,11 @@
 ## Iterazione 3 (2026-10-27)
 - Pioggia leggera inclinata dal vento (Ossigeno, Industria, Oggi), pini che ondeggiano al vento, onde animate sull'acqua (shader vertex con normali dinamiche)
 
+## Iterazione 4 (2026-10-27)
+- Suono pioggia morbido (rumore filtrato + gocce) solo in Ossigeno/Industria/Oggi
+- Cap.1 meteoriti, più stelle, ufo; cap.2 fuochi sulle terre emerse; cap.3 vapori; cap.4 persone, cavalli, cani, mucche, lago con pesci; cap.5 più luce, binari più lunghi con traversine, operai, camion di carbone; cap.6 infografica multicolore; cap.7 sole, ozono, autostrada con camion, aerei
+- Alone del globo a gradiente morbido; testi bianchi; titoli Inter 800; titolo "Punto di non ritorno"; frase finale in minuscolo
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

@@ -65,8 +65,8 @@ void main(){
  col+=magmaE*(1.0-s1);
  float city=step(0.8,noise(n0*90.0))*land*(1.0-ice)*(1.0-day)*s2;
  col+=vec3(1.0,0.66,0.3)*city*1.4;
- float fres=pow(1.0-max(dot(n0,V),0.0),3.0);
- col+=uAtmo*fres*(0.15+0.55*day);
+ float fres=pow(1.0-max(dot(n0,V),0.0),4.5);
+ col+=uAtmo*fres*(0.08+0.3*day);
  gl_FragColor=vec4(col,uAlpha);
 }`;
 
@@ -81,8 +81,9 @@ void main(){ vec3 p=normalize(vPos);
 
 const ATMO_FRAG_ = `
 uniform vec3 uAtmo; uniform float uAlpha; varying vec3 vN; varying vec3 vW;
-void main(){ float f=pow(0.75-dot(normalize(vN),normalize(cameraPosition-vW))*0.75,3.0);
- gl_FragColor=vec4(uAtmo,f*uAlpha*0.6); }`;
+void main(){ float d=dot(normalize(vN),normalize(cameraPosition-vW));
+ float f=pow(clamp(-d,0.0,1.0),4.0);
+ gl_FragColor=vec4(uAtmo,f*uAlpha*0.55); }`;
 
 const MAGMA_ATMO = new THREE.Color("#ff6a2a");
 const OCEAN_ATMO = new THREE.Color("#66d9ef");
@@ -141,7 +142,7 @@ export default function Globe({ segments = 96, low = false }) {
         <sphereGeometry args={[3.2, 64, 64]} />
         <shaderMaterial vertexShader={VERT} fragmentShader={CLOUD_FRAG} uniforms={cloudUniforms} defines={defines} transparent depthWrite={false} />
       </mesh>
-      <mesh scale={1.06}>
+      <mesh scale={1.22}>
         <sphereGeometry args={[3.2, 48, 48]} />
         <shaderMaterial vertexShader={VERT} fragmentShader={ATMO_FRAG_} uniforms={atmoUniforms}
           side={THREE.BackSide} transparent blending={THREE.AdditiveBlending} depthWrite={false} />

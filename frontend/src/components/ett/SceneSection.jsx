@@ -22,19 +22,19 @@ export const SceneSection = ({ scene, index, onStory }) => {
       <div className="sticky top-0 flex h-[100svh] items-end px-5 pb-24 sm:px-10 md:items-center md:pb-0 lg:px-16">
         <motion.div
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}
-          className="relative max-w-xl rounded-sm p-5 sm:p-0 md:max-w-lg lg:max-w-xl"
+          className="relative max-w-xl rounded-sm p-5 sm:p-0 md:max-w-lg lg:max-w-2xl"
         >
           <div className="pointer-events-none absolute -inset-8 -z-10 rounded-full bg-[#080B10]/55 blur-3xl md:bg-[#080B10]/35" />
-          <MaskLine i={0} className="font-mono text-xs uppercase tracking-[0.25em]">
-            <span style={{ color: scene.accent }}>{scene.n}</span>
-            <span className="text-[#F4F7FA]/80"> — {scene.era}</span>
+          <MaskLine i={0} className="font-mono text-xs uppercase tracking-[0.25em] text-white">
+            <span>{scene.n}</span>
+            <span> — {scene.era}</span>
           </MaskLine>
-          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-4xl font-black uppercase leading-[0.9] tracking-tight text-[#F4F7FA] sm:text-5xl lg:text-6xl">
+          <h2 id={`title-${scene.id}`} className="font-display mt-4 text-4xl uppercase leading-[0.95] text-white sm:text-5xl lg:text-[3.5rem]">
             {lines.map((l, i) => <MaskLine key={i} i={i + 1}>{l}</MaskLine>)}
           </h2>
           <motion.p
             variants={{ hidden: { opacity: 0, x: -16 }, show: { opacity: 1, x: 0, transition: { delay: 0.35, duration: 0.9 } } }}
-            className="mt-5 text-sm leading-relaxed text-[#F4F7FA]/90 sm:text-base md:text-lg"
+            className="mt-5 text-sm leading-relaxed text-white sm:text-base md:text-lg"
           >
             {scene.body}
           </motion.p>

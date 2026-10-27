@@ -3,7 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 let sprite = null;
-const getSprite = () => {
+export const getSprite = () => {
   if (sprite) return sprite;
   const c = document.createElement("canvas");
   c.width = c.height = 64;

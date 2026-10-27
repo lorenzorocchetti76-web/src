@@ -1,11 +1,11 @@
 // Tutti i testi dell'esperienza: sostituire qui per cambiare contenuti (es. versione agenzia).
 export const SITE = {
-  title: "EARTH THROUGH TIME",
+  title: "Punto di non ritorno",
   tagline: "Un viaggio immersivo di 4,5 miliardi di anni nella storia climatica della Terra",
   credit: "Studio Rocchetti Comunicazione",
   email: "info@studiorocchetti.com",
   marquee: ["4,5 miliardi di anni", "Sette epoche", "Un solo pianeta", "Il clima è sempre cambiato", "Oggi il ritmo lo cambiamo noi"],
-  finalTitle: ["IL CLIMA È SEMPRE CAMBIATO.", "OGGI, A CAMBIARE IL RITMO,", "SIAMO NOI."],
+  finalTitle: ["Il clima è sempre cambiato.", "oggi, a cambiare il ritmo,", "siamo noi."],
   finalSub: "Comprendere il passato è essenziale per affrontare il futuro.",
   consulted: "27 ottobre 2026",
 };
