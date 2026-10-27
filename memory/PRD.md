@@ -61,6 +61,13 @@
 - Fasi 02–07 durano il doppio (340vh) con pausa del testo e zoom avanti/indietro della camera (store.beat); titoli più piccoli; ombra su tutti i testi; 8 linee di avanzamento tutte bianche
 - Test frontend: iteration_1.json 100%
 
+## Iterazione 9 (2026-10-27)
+- Pausa delle fasi 02–07 ridotta del 50% (sezioni 245vh: 75vh entrata, ~95vh pausa con zoom, 75vh uscita)
+- Termometro live (Thermometer.jsx): temperatura media stimata per capitolo, segue lo scroll; desktop in basso a destra, mobile pillola in alto
+- Mappa ingrandita (terreno 26×26, diorama ×1,15) con elementi per fase: cianobatteri e rocce a bande (02), mammut e ghiacciai (03), chiesa, covoni, pecore, case e boschi esterni (04), case operaie, carbone, fabbriche (05), osservatorio, radiotelescopi, pallone sonda (06), parco solare, turbine, incendio (07)
+- Rimosso il simbolo ↗ dopo "Galleria 3D" e "Scrivici"
+- Test frontend: iteration_2.json 100%
+
 ## Backlog
 - In attesa: integrazione ChatGPT (l'utente deve scegliere la funzione: guida chat, spiegazione capitolo, quiz o insight admin)
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli

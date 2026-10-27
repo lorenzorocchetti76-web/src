@@ -1,0 +1,22 @@
+{
+  "summary": "Frontend-only regression for 4 new requests: (1) 245vh sections 02-07 and 170vh for nascita/finale verified; (2) LiveThermometer hidden on hero (opacity 0) and visible once story starts, per-chapter value+note match spec exactly for all 8 chapters (nascita > 1000 °C / oceano di magma … finale ≈ 16,6 °C / proiezione 2100); (3) 3D enlarged maps render without errors across chapters; (4) footer-gallery-link reads exactly 'Galleria 3D', footer-email-link reads 'Scrivici — info@studiorocchetti.com', no ↗/arrow/emoji anywhere on home or /galleria pages or header gallery-link. 0 page errors on load and while jumping through all chapters at 1440x800 and 390x844.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Thermometer mobile pill: 'STIMA MOLTO INCERTA' note wraps to 2 lines in the compact pill at 390px (value remains single-line as per spec). Acceptable but if a tighter single-line pill is desired, consider shortening the note or allowing it to truncate."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "n/a (frontend only)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 4 new acceptance criteria verified green. Section heights: 1.70vh ratio for nascita/finale, 2.45 for 02-07. Thermometer values/notes match TEMPS table in /app/frontend/src/components/ett/Thermometer.jsx. Footer and galleria pages are emoji/arrow-free in link labels. Desktop thermometer positioned bottom-right (x=1286..1416 @ 1440vp), mobile pill at top-center (y=70..140 @ 390vp) and does not cover bottom-aligned chapter text.",
+  "rca of the issue": "n/a - no issues found"
+}

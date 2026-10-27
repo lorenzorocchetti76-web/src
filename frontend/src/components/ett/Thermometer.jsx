@@ -54,7 +54,7 @@ export const LiveThermometer = () => {
       </div>
       <div className="text-left lg:text-center">
         <p ref={val} data-testid="live-thermometer-value" className="whitespace-nowrap font-mono text-sm font-semibold tabular-nums text-white">—</p>
-        <p ref={note} data-testid="live-thermometer-note" className="font-mono text-xs uppercase tracking-wider text-white/80 lg:max-w-[6.5rem]">—</p>
+        <p ref={note} data-testid="live-thermometer-note" className="whitespace-nowrap font-mono text-xs uppercase tracking-wider text-white/80 lg:max-w-[6.5rem] lg:whitespace-normal">—</p>
       </div>
     </div>
   );
