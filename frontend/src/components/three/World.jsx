@@ -31,11 +31,13 @@ function CameraRig() {
     const A = CAMERA_KEYS[a], B = CAMERA_KEYS[b];
     const idle = reduced ? 0 : Math.sin(state.clock.elapsedTime * 0.12) * 4;
     const mobileK = size.width / size.height < 0.8 ? 1.55 : size.width / size.height < 1.2 ? 1.25 : 1;
+    const phone = mobileK > 1.3;
+    const mk = phone ? lerp(A.m ?? 1, B.m ?? 1, t) : 1;
     const want = {
       az: lerp(A.az, B.az, t) + idle + store.dragAz,
       el: Math.min(85, Math.max(4, lerp(A.el, B.el, t) + store.dragEl)),
-      d: lerp(A.d, B.d, t) * mobileK * (1 - store.zoom) * (1 - (reduced ? 0 : 0.32) * store.beat),
-      tx: lerp(A.t[0], B.t[0], t), ty: lerp(A.t[1], B.t[1], t), tz: lerp(A.t[2], B.t[2], t) * (mobileK > 1.3 ? 0.15 : 1),
+      d: lerp(A.d, B.d, t) * mobileK * mk * (1 - store.zoom) * (1 - (reduced ? 0 : 0.32) * store.beat),
+      tx: lerp(A.t[0], B.t[0], t), ty: lerp(A.t[1], B.t[1], t) - (phone ? lerp(A.my ?? 0, B.my ?? 0, t) : 0), tz: lerp(A.t[2], B.t[2], t) * (phone ? 0.15 : 1),
     };
     if (!cur.current) cur.current = { ...want };
     const k = 1 - Math.exp(-Math.min(dt, 0.1) * (reduced ? 12 : 2.6));

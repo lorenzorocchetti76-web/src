@@ -57,7 +57,7 @@ function TempCurve({ grow }) {
   }, []);
   useFrame(() => {
     const k = THREE.MathUtils.clamp((grow.current - 1.2) / 3, 0, 1);
-    geo.setDrawRange(0, Math.floor(geo.index.count * k / 6) * 6);
+    geo.setDrawRange(0, Math.ceil(geo.index.count * k / 6) * 6);
     dots.current?.children.forEach((m, i) => { m.visible = k >= i / (DATA.length - 1) - 0.01; });
   });
   return (

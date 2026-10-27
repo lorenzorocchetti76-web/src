@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only verification of the rebuilt Chapter 06 'Scienza' premium 3D infographic. Desktop 1440x800: after rail-jump-scienza + ~14s, holographic panel 'CO2 IN ATMOSFERA · 1960-2024' with legend lines (BARRE: PARTI PER MILIONE (MAUNA LOA) / LINEA: ANOMALIA DI TEMPERATURA GLOBALE (°C)) is clearly visible, 8 glowing glass bars with values 317,326,339,354,370,390,414,425 grow sequentially with year labels 1960,1970,1980,1990,2000,2010,2020,2024 ordered left-to-right. Red temperature curve with dots is drawn progressively and ends with '+1,3 °C' label. Scientists in white lab coats stand near a console with glowing monitors; politicians in dark suits with ties and a press camera stand near a lectern with blue and white flags, all facing the chart. Leaving the chapter (to Industria) and returning restarts the bar growth animation from zero (confirmed via two screenshots at different timestamps). Mobile 390x844: Chapter 06 chart is reasonably framed - panel title/legend/red curve/bars with 32x values and thermometer pill '≈ 14,1 °C METÀ NOVECENTO' are all visible; text column readable. Other mobile chapters (nascita, medioevo, industria, oggi, finale) frame correctly with proper thermometer values. 0 page errors on load and across all chapter jumps on both viewports.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Chapter 06 / Scienza (mobile 390x844)", "issues": ["Framing is tight: the holographic panel title 'CO2 IN ATMOSFERA · 1960-2024' is clipped on the left edge and only the lower half of some bars is visible below the mid text block. The curve and most bars/values remain visible and the pill is readable, so it still satisfies the 'reasonably framed, not fully covered' acceptance criterion. Consider nudging CAMERA_KEYS[5] tz / target or reducing scale on portrait phones for a cleaner frame."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ScienceStage.jsx uses module-level singletons for THREE materials (GLASS, LINE, DOT, SCREEN, DARK, STEEL). Fine for a single stage but means they are not disposed on unmount; acceptable for this always-mounted scene.",
+    "Bar label fillOpacity is driven directly from k each frame; small chance of flicker on very low grow values but visually smooth in testing.",
+    "ScienceStage TempCurve setDrawRange uses geo.index.count/6 math - index is 'Uint16/32' triangles; floor(k * count /6)*6 keeps triangle alignment but could skip the last triangle at k=1. Not visibly noticeable (end label '+1,3 °C' hides the join)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100% desktop, mobile acceptable (framing tight but spec-compliant)"},
+  "test_credentials": "n/a (no auth)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Chapter 06 ScienceStage renders a dark circular stage with holographic panel, 8 CO2 bars (values 317->425), red temperature TubeGeometry curve with progressive drawRange, scientists w/ coats near Console mesh, politicians w/ ties near Lectern with 2 flags and a PressCam. Growth animation keyed on sceneWeight(progress,5)<0.3 resetting grow.current to 0. On desktop viewport the frame is excellent; on mobile 390x844 the frame is tight but the chart remains visible. Headless WebGL needs ~12-14s after rail jump for easing + growth animation to complete.",
+  "rca of the issue": "n/a - no bugs found"
+}

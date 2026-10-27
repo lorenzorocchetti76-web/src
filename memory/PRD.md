@@ -68,6 +68,11 @@
 - Rimosso il simbolo ↗ dopo "Galleria 3D" e "Scrivici"
 - Test frontend: iteration_2.json 100%
 
+## Iterazione 10 (2026-10-27)
+- Capitolo 06 rifatto (ScienceStage.jsx): palco olografico, pannello "CO2 in atmosfera 1960–2024", 8 barre di vetro luminose che crescono in sequenza (ppm Mauna Loa), curva rossa dell'anomalia di temperatura disegnata progressivamente (+1,3 °C), scienziati in camice alla console, politici in giacca e cravatta al leggio con bandiere e telecamera stampa; testi 3D con font locali /fonts
+- Inquadratura dedicata su telefono (chiavi camera m/my)
+- Test frontend: iteration_3.json 100%
+
 ## Backlog
 - In attesa: integrazione ChatGPT (l'utente deve scegliere la funzione: guida chat, spiegazione capitolo, quiz o insight admin)
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
