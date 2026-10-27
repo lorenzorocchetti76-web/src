@@ -28,6 +28,12 @@
 - Dashboard admin: KPI, grafici, split modalità/dispositivi/modelli, log errori live (10s), svuota log
 - Fonti (IPCC AR6, WMO 2024, Forster 2025, NOAA, NASA...)
 
+## Iterazione 2 (2026-10-27)
+- Rimossi: etichette accanto ad Approfondisci, marquee nero, header superiore (restano logo e audio negli angoli), sezione fonti in home, pulsante percorso testuale, link "Fonti e riferimenti"
+- Proiezione ortografica isometrica, Terra con rilievi, nuvole, oceani speculari, luci notturne; post-processing (bloom, vignette, SMAA) su desktop; luci ambientali
+- Più dettagli: rocce, bagliori lavici, iceberg, aurora, mulino, uccelli, treno, pale eoliche, nuvole
+- Font Space Grotesk + Inter; audio solo toni puri (niente rumore); scroll più equilibrato (sezioni 170vh, Lenis a durata)
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

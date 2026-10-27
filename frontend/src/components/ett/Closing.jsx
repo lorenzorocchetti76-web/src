@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SITE, SOURCES } from "@/lib/content";
 
 export const FinalSection = ({ onStory }) => (
-  <section id="finale" data-testid="scene-section-finale" aria-labelledby="title-finale" className="relative h-[200vh]">
+  <section id="finale" data-testid="scene-section-finale" aria-labelledby="title-finale" className="relative h-[170vh]">
     <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-end px-5 pb-20 text-center sm:justify-center sm:pb-0">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}>
         <h2 id="title-finale" className="font-display text-4xl font-black uppercase leading-[0.88] tracking-tight text-[#F4F7FA] sm:text-6xl lg:text-7xl">
@@ -42,21 +43,12 @@ export const SourcesList = () => (
 );
 
 export const SourcesFooter = () => (
-  <div className="relative z-10 bg-[#080B10]">
-    <section id="fonti" data-testid="sources-section" className="grid gap-12 px-5 py-24 sm:px-10 md:grid-cols-[1fr_1.6fr] lg:px-16">
-      <div>
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#66D9EF]">Fonti · consultate il {SITE.consulted}</p>
-        <h2 className="font-display mt-4 text-4xl font-black uppercase leading-[0.9] tracking-tight sm:text-5xl">Scienza,<br />non opinioni.</h2>
-        <p className="mt-6 max-w-sm text-sm leading-relaxed text-[#F4F7FA]/80">
-          Ogni scena distingue dati osservati, ricostruzioni, schemi concettuali e animazioni artistiche. I paesaggi 3D sono interpretazioni visive, non mappe di luoghi reali. Le cifre vanno verificate e aggiornate prima di ogni pubblicazione.
-        </p>
-      </div>
-      <SourcesList />
-    </section>
-    <footer data-testid="site-footer" className="border-t border-white/10 px-5 py-14 sm:px-10 lg:px-16">
-      <p className="font-display text-[14vw] font-black uppercase leading-[0.8] tracking-tight text-[#F4F7FA]/95 sm:text-[9vw]">Earth<br />Through Time</p>
+  <div className="relative z-10 bg-gradient-to-b from-transparent via-[#080B10]/90 to-[#080B10] pt-40">
+    <footer data-testid="site-footer" className="border-t border-white/10 bg-[#080B10] px-5 py-14 sm:px-10 lg:px-16">
+      <p className="font-display text-[14vw] uppercase leading-[0.85] text-[#F4F7FA]/95 sm:text-[9vw]">Earth<br />Through Time</p>
       <div className="mt-10 flex flex-col gap-4 font-mono text-xs uppercase tracking-widest text-[#F4F7FA]/75 sm:flex-row sm:items-center sm:justify-between">
         <span>Un progetto di {SITE.credit}</span>
+        <Link to="/galleria" data-testid="footer-gallery-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Galleria 3D ↗</Link>
         <a href={`mailto:${SITE.email}`} data-testid="footer-email-link" className="text-[#F4F7FA] hover:text-[#66D9EF]">Scrivici — {SITE.email} ↗</a>
         <span>© 2026 SRC</span>
       </div>

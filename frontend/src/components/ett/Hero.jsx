@@ -1,6 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import { Link } from "react-router-dom";
 import { SITE } from "@/lib/content";
 
 const reveal = {
@@ -16,7 +15,7 @@ export const Hero = ({ onStart, ready }) => {
     <section data-testid="hero-section" className="relative flex h-[100svh] flex-col justify-end px-5 pb-10 sm:px-10 lg:px-16">
       <motion.div style={{ y, opacity: op }} initial="hidden" animate={ready ? "show" : "hidden"} className="relative">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#66D9EF]">{SITE.credit} presenta</p>
-        <h1 className="font-display mt-4 text-[17vw] font-black uppercase leading-[0.8] tracking-[-0.02em] text-[#F4F7FA] sm:text-[13vw] lg:text-[11.5vw]">
+        <h1 className="font-display mt-4 text-[15vw] font-black uppercase leading-[0.85] tracking-[-0.04em] text-[#F4F7FA] sm:text-[12vw] lg:text-[10.5vw]">
           {["Earth", "Through", "Time"].map((w, i) => (
             <span key={w} className="block overflow-hidden">
               <motion.span className={`block ${i === 1 ? "pl-[12vw] text-transparent [-webkit-text-stroke:1.5px_#F4F7FA]" : ""} ${i === 2 ? "text-[#FF7138]" : ""}`} variants={reveal} custom={i}>
@@ -36,10 +35,6 @@ export const Hero = ({ onStart, ready }) => {
               Inizia il viaggio
               <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
             </button>
-            <Link to="/testo" data-testid="hero-text-route-btn"
-              className="rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-[#F4F7FA] transition-colors duration-300 hover:border-[#66D9EF] hover:text-[#66D9EF]">
-              Percorso testuale
-            </Link>
           </motion.div>
         </div>
       </motion.div>

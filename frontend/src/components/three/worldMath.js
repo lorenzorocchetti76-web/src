@@ -40,7 +40,7 @@ export function groundY(scene, x, z) {
 
 export const WATER = [
   { y: 0, a: 0, col: c("#1a6f86") },
-  { y: 1.0, a: 0.78, col: c("#1a6f86") },
+  { y: 1.0, a: 0.8, col: c("#0e4f63") },
   { y: 0, a: 0, col: c("#9fc6dc") },
   { y: 0, a: 0, col: c("#9fc6dc") },
   { y: 0, a: 0, col: c("#2b3138") },

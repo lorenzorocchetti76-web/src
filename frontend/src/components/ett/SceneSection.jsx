@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { KindTags } from "./StorySheet";
 
 const line = {
   hidden: { y: "105%" },
@@ -19,7 +18,7 @@ export const SceneSection = ({ scene, index, onStory }) => {
   const half = Math.ceil(words.length / 2);
   const lines = words.length > 4 ? [words.slice(0, half).join(" "), words.slice(half).join(" ")] : [scene.title];
   return (
-    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className="relative h-[200vh]">
+    <section id={scene.id} data-testid={`scene-section-${scene.id}`} aria-labelledby={`title-${scene.id}`} className="relative h-[170vh]">
       <div className="sticky top-0 flex h-[100svh] items-end px-5 pb-24 sm:px-10 md:items-center md:pb-0 lg:px-16">
         <motion.div
           initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}
@@ -48,7 +47,6 @@ export const SceneSection = ({ scene, index, onStory }) => {
               Approfondisci
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </button>
-            <div className="hidden sm:block"><KindTags kinds={scene.kinds} /></div>
           </motion.div>
         </motion.div>
       </div>

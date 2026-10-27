@@ -5,6 +5,7 @@ import { store } from "@/lib/store";
 import { sceneWeight, groundY } from "./worldMath";
 import Particles from "./Particles";
 import { Volcano, Stromatolites, Glacier, Pine, House, Factory, CityBlock } from "./Models";
+import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow } from "./Details";
 
 // Gruppo che compare/scompare in base alla vicinanza del progresso alla scena indicata.
 function Era({ index, spread = 1.25, children }) {
@@ -63,6 +64,9 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Volcano position={on(0, 2.6, 1.6)} scale={0.85} rotation-y={1.2} />
           <Volcano position={on(0, 0.2, 3.4)} scale={0.7} rotation-y={2.4} />
           <Particles visibleRef={vis} count={c(260)} area={[12, 7, 12]} origin={[0, 0.5, 0]} speed={0.9} color="#ff7138" size={0.09} />
+          <Rocks count={c(30)} color="#2a1a14" groundY={(x, z) => groundY(0, x, z)} />
+          <LavaGlow positions={[[-2.2, 3, -1.2], [2.6, 2.6, 1.6], [0, 1.2, 0]]} />
+          <Particles visibleRef={vis} count={c(90)} area={[10, 5, 10]} origin={[0, 3, 0]} speed={0.25} color="#5b4a44" size={0.35} additive={false} opacity={0.35} swirl={0.6} />
         </>)}
       </Era>
       <Era index={1}>
@@ -71,6 +75,11 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Stromatolites position={on(1, 2.8, -1.8)} scale={1} rotation-y={1} />
           <Stromatolites position={on(1, 0.3, -3.6)} scale={0.9} rotation-y={2} />
           <Particles visibleRef={vis} count={c(180)} area={[12, 1.6, 12]} origin={[0, 0.1, 0]} speed={0.45} color="#bff3ff" size={0.07} />
+          <Stromatolites position={on(1, -4, -0.8)} scale={0.7} rotation-y={3} />
+          <Stromatolites position={on(1, 4, 3.6)} scale={0.8} rotation-y={0.4} />
+          <Rocks count={c(24)} color="#4a4038" groundY={(x, z) => groundY(1, x, z)} />
+          <Cloud position={[0, 5.5, -2]} scale={1.3} speed={0.2} />
+          <Cloud position={[0, 4.8, 3]} scale={1} speed={0.15} />
         </>)}
       </Era>
       <Era index={2}>
@@ -79,6 +88,10 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Glacier position={on(2, 3, 2.5)} scale={1.2} rotation-y={0.8} />
           <Glacier position={on(2, 2.6, -3.6)} scale={1} rotation-y={2} />
           <Particles visibleRef={vis} count={c(320)} area={[16, 9, 16]} origin={[0, 0, 0]} speed={-0.8} color="#ffffff" size={0.07} additive={false} swirl={0.6} />
+          <Glacier position={on(2, -3.6, 3)} scale={0.9} rotation-y={1.4} />
+          <Iceberg position={on(2, 0.6, 0.4)} scale={1.2} />
+          <Iceberg position={on(2, -1, 3.8)} scale={0.8} />
+          <Aurora position={[0, 7.5, -6]} rotation-x={-0.25} />
         </>)}
       </Era>
       <Era index={3}>
@@ -91,6 +104,12 @@ export default function EraProps({ q = 1, shadows = false }) {
           ))}
           <Particles visibleRef={vis} count={c(80)} area={[2, 2.5, 2]} origin={[-1.8, 1, -2.7]} speed={0.35} color="#c8ccd2" size={0.12} additive={false} opacity={0.5} />
           <Particles visibleRef={vis} count={c(220)} area={[14, 7, 14]} origin={[0, 0, 0]} speed={-0.5} color="#ffffff" size={0.05} additive={false} swirl={0.4} />
+          <Windmill position={on(3, 3.8, 0.6)} scale={1.3} rotation-y={-0.6} />
+          {[[-4.6, -0.6], [4.5, 4.3], [-0.6, 4.6], [3.4, -4.6], [-4.8, -4.4]].map(([x, z], i) => (
+            <Pine key={`p2${i}`} position={on(3, x, z)} scale={0.9 + (i % 2) * 0.3} />
+          ))}
+          <Birds radius={4.5} y={5} count={5} />
+          <Cloud position={[0, 6, -3]} scale={1.2} speed={0.18} />
         </>)}
       </Era>
       <Era index={4}>
@@ -103,6 +122,8 @@ export default function EraProps({ q = 1, shadows = false }) {
           ))}
           <Particles visibleRef={vis} count={c(260)} area={[7, 8, 5]} origin={[0.8, 2.5, 0]} speed={0.7} color="#8c8f94" size={0.22} additive={false} opacity={0.45} swirl={0.5} />
           <Particles visibleRef={vis} count={c(140)} area={[16, 4, 16]} origin={[0, 7, 0]} speed={0.12} color="#66d9ef" size={0.06} />
+          <Train path={5.2} y={0.75} />
+          <Particles visibleRef={vis} count={c(120)} area={[5, 6, 4]} origin={[-1.6, 2.5, 1.6]} speed={0.6} color="#6f7277" size={0.25} additive={false} opacity={0.4} swirl={0.4} />
         </>)}
       </Era>
       <Era index={5}>
@@ -134,6 +155,12 @@ export default function EraProps({ q = 1, shadows = false }) {
           ))}
           <Particles visibleRef={vis} count={c(120)} area={[3, 3, 3]} origin={[-3.6, 0.8, 3]} speed={1.1} color="#ff7138" size={0.1} />
           <Particles visibleRef={vis} count={c(160)} area={[16, 3, 16]} origin={[0, 1, 0]} speed={0.25} color="#ff4b45" size={0.05} opacity={0.5} />
+          {[[-1.5, -4.2], [0.2, -4.6], [1.9, -4.2]].map(([x, z], i) => (
+            <Turbine key={i} position={on(6, x, z)} rotation-y={0.4} />
+          ))}
+          <CityBlock position={on(6, 4.4, -2.4)} scale={0.8} rotation-y={0.6} />
+          <Birds radius={3.6} y={4.5} count={4} speed={0.5} />
+          <Cloud position={[0, 6.5, 1]} scale={1} speed={0.22} />
         </>)}
       </Era>
     </group>

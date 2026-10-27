@@ -33,10 +33,8 @@ export const StorySheet = ({ scene, onOpenChange }) => (
             <SheetDescription className="text-[#F4F7FA]/80">{scene.body}</SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-6">
-            <KindTags kinds={scene.kinds} />
             {scene.milestones && <Milestones items={scene.milestones} />}
             {scene.story.map((p, i) => <p key={i} className="leading-relaxed text-[#F4F7FA]/85">{p}</p>)}
-            <a href="/testo#fonti" className="inline-block font-mono text-xs uppercase tracking-widest text-[#66D9EF] underline-offset-4 hover:underline">Fonti e riferimenti →</a>
           </div>
         </>
       )}

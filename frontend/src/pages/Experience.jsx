@@ -1,18 +1,17 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SCENES } from "@/lib/content";
-import { store, useSceneIndex, resetView, hasWebGL } from "@/lib/store";
+import { useSceneIndex, hasWebGL } from "@/lib/store";
 import { useScrollStory } from "@/lib/scroll";
 import { audio } from "@/lib/audio";
 import { track } from "@/lib/api";
-import { Header } from "@/components/ett/Header";
-import { Hero, Marquee } from "@/components/ett/Hero";
+import { Logo } from "@/components/ett/Logo";
+import { SoundControl } from "@/components/ett/SoundControl";
+import { Hero } from "@/components/ett/Hero";
 import { Preloader } from "@/components/ett/Preloader";
 import { SceneSection } from "@/components/ett/SceneSection";
 import { FinalSection, SourcesFooter } from "@/components/ett/Closing";
-import { TimelineSheet } from "@/components/ett/TimelineSheet";
 import { StorySheet } from "@/components/ett/StorySheet";
-import { ExploreLayer } from "@/components/ett/ExploreLayer";
 import { SceneRail } from "@/components/ett/SceneRail";
 import { ErrorBoundary, FallbackBackdrop, FallbackNotice } from "@/components/ett/Fallback";
 
@@ -26,16 +25,14 @@ export default function Experience() {
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(!webgl);
   const [minTime, setMinTime] = useState(false);
-  const [timeline, setTimeline] = useState(false);
   const [story, setStory] = useState(null);
-  const [exploring, setExploring] = useState(false);
-  const { jumpTo, pause } = useScrollStory(storyRef);
+  const { jumpTo } = useScrollStory(storyRef);
   const can3d = webgl && !failed;
   const loaded = ready && minTime;
 
   useEffect(() => {
     const a = setTimeout(() => setMinTime(true), 1500);
-    const b = setTimeout(() => setReady(true), 8000);
+    const b = setTimeout(() => setReady(true), 4000);
     track("session_start", { mode: webgl ? "3d" : "fallback" });
     return () => { clearTimeout(a); clearTimeout(b); };
   }, [webgl]);
@@ -53,11 +50,8 @@ export default function Experience() {
     return undefined;
   }, [loaded, hash, jumpTo]);
 
-  const onJump = useCallback((i) => { setTimeline(false); audio.blip(520); track("timeline_jump", { scene: SCENES[i].id }); jumpTo(i); }, [jumpTo]);
+  const onJump = useCallback((i) => { audio.blip(520); track("timeline_jump", { scene: SCENES[i].id }); jumpTo(i); }, [jumpTo]);
   const onStory = useCallback((i) => { audio.blip(740); track("story_open", { scene: SCENES[i].id }); setStory(SCENES[i]); }, []);
-  const onExplore = () => { setExploring(true); store.exploring = true; pause(true); track("explore_mode", { scene: SCENES[scene].id }); };
-  const onExitExplore = useCallback(() => { setExploring(false); store.exploring = false; resetView(); pause(false); }, [pause]);
-  const onReset = () => { resetView(); audio.blip(400); };
 
   return (
     <div className="grain relative bg-[#080B10] text-[#F4F7FA]" data-testid="experience-page">
@@ -73,11 +67,11 @@ export default function Experience() {
         ) : <FallbackBackdrop scene={scene} />}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(8,11,16,0.7)_100%)]" />
       </div>
-      <Header scene={scene} can3d={can3d} onTimeline={() => setTimeline(true)} onReset={onReset} onExplore={onExplore} />
+      <a href="/" aria-label="Earth Through Time" data-testid="corner-logo" className="fixed left-4 top-4 z-40 sm:left-8 sm:top-6"><Logo className="h-8 w-8" /></a>
+      <div className="fixed right-4 top-4 z-40 sm:right-8 sm:top-6" data-testid="corner-audio"><SoundControl /></div>
       <SceneRail current={scene} onJump={onJump} />
       <main className="relative z-10">
         <Hero ready={loaded} onStart={() => jumpTo(0)} />
-        <Marquee />
         <div ref={storyRef} data-testid="story-container">
           {SCENES.slice(0, 7).map((s, i) => <SceneSection key={s.id} scene={s} index={i} onStory={onStory} />)}
           <FinalSection onStory={onStory} />
@@ -85,8 +79,6 @@ export default function Experience() {
         <SourcesFooter />
       </main>
       {!can3d && <FallbackNotice />}
-      {exploring && <ExploreLayer onExit={onExitExplore} />}
-      <TimelineSheet open={timeline} onOpenChange={setTimeline} current={scene} onJump={onJump} />
       <StorySheet scene={story} onOpenChange={(o) => !o && setStory(null)} />
     </div>
   );

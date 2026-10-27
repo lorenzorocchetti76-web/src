@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three-stdlib";
 import { store } from "@/lib/store";
 import { CELL, PROFILES, WATER, dioramaWeight, field, riverMask, ease, clamp01 } from "./worldMath";
 
@@ -24,7 +25,7 @@ export default function Diorama({ n = 18, shadows = false, children }) {
     return arr;
   }, [n]);
 
-  const geo = useMemo(() => { const g = new THREE.BoxGeometry(CELL * 0.94, 1, CELL * 0.94); g.translate(0, 0.5, 0); return g; }, []);
+  const geo = useMemo(() => { const g = new RoundedBoxGeometry(CELL * 0.96, 1, CELL * 0.96, 2, 0.05); g.translate(0, 0.5, 0); return g; }, []);
 
   useFrame(() => {
     const p = store.progress;
@@ -69,11 +70,11 @@ export default function Diorama({ n = 18, shadows = false, children }) {
   return (
     <group ref={group}>
       <instancedMesh ref={inst} args={[geo, null, cells.length]} castShadow={shadows} receiveShadow={shadows}>
-        <meshStandardMaterial roughness={0.85} metalness={0.05} flatShading />
+        <meshStandardMaterial roughness={0.72} metalness={0.04} envMapIntensity={0.6} />
       </instancedMesh>
       <mesh ref={water} rotation-x={-Math.PI / 2}>
         <planeGeometry args={[size, size]} />
-        <meshStandardMaterial transparent opacity={0} roughness={0.15} metalness={0.3} color="#1a6f86" depthWrite={false} />
+        <meshStandardMaterial transparent opacity={0} roughness={0.55} metalness={0} envMapIntensity={0.12} color="#0e4f63" depthWrite={false} />
       </mesh>
       <mesh position-y={-0.6}>
         <boxGeometry args={[size + 0.4, 1.2, size + 0.4]} />

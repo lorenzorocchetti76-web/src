@@ -1,13 +1,13 @@
-// Audio ambientale sintetizzato via Web Audio API: nessun file da scaricare, spento di default.
+// Audio ambientale sintetizzato via Web Audio API: solo toni puri (nessun rumore/fruscio), spento di default.
 const PRESETS = [
-  { tones: [[41, "sawtooth", 0.05], [55, "sine", 0.18], [82, "sine", 0.06]], noise: 260, noiseGain: 0.22, lfo: 0.07 },
-  { tones: [[110, "sine", 0.09], [165, "sine", 0.06], [220, "triangle", 0.025]], noise: 900, noiseGain: 0.08, lfo: 0.12 },
-  { tones: [[196, "sine", 0.04], [294, "sine", 0.035], [392, "sine", 0.02]], noise: 2600, noiseGain: 0.1, lfo: 0.05 },
-  { tones: [[98, "triangle", 0.06], [147, "sine", 0.05], [196, "sine", 0.03]], noise: 1400, noiseGain: 0.05, lfo: 0.09 },
-  { tones: [[49, "square", 0.025], [73, "sawtooth", 0.03], [98, "sine", 0.06]], noise: 600, noiseGain: 0.16, lfo: 1.6 },
-  { tones: [[220, "sine", 0.05], [330, "sine", 0.035], [440, "triangle", 0.015]], noise: 3000, noiseGain: 0.025, lfo: 0.3 },
-  { tones: [[65, "sawtooth", 0.035], [98, "sine", 0.08], [131, "sine", 0.04]], noise: 1100, noiseGain: 0.12, lfo: 0.2 },
-  { tones: [[87, "sine", 0.1], [131, "sine", 0.06], [174, "sine", 0.03]], noise: 500, noiseGain: 0.04, lfo: 0.04 },
+  { tones: [[55, "sine", 0.16], [82.4, "sine", 0.07], [110, "sine", 0.03]], lfo: 0.06 },
+  { tones: [[110, "sine", 0.08], [164.8, "sine", 0.05], [220, "sine", 0.025]], lfo: 0.1 },
+  { tones: [[196, "sine", 0.04], [293.7, "sine", 0.03], [392, "sine", 0.018]], lfo: 0.05 },
+  { tones: [[98, "sine", 0.06], [146.8, "sine", 0.045], [196, "triangle", 0.02]], lfo: 0.08 },
+  { tones: [[73.4, "sine", 0.09], [110, "sine", 0.05], [146.8, "triangle", 0.02]], lfo: 0.12 },
+  { tones: [[220, "sine", 0.045], [329.6, "sine", 0.03], [440, "sine", 0.015]], lfo: 0.2 },
+  { tones: [[65.4, "sine", 0.1], [98, "sine", 0.06], [130.8, "triangle", 0.025]], lfo: 0.15 },
+  { tones: [[87.3, "sine", 0.1], [130.8, "sine", 0.06], [174.6, "sine", 0.03]], lfo: 0.04 },
 ];
 
 class AudioEngine {
@@ -30,11 +30,6 @@ class AudioEngine {
     this.master = this.ctx.createGain();
     this.master.gain.value = 0;
     this.master.connect(this.ctx.destination);
-    const len = this.ctx.sampleRate * 2;
-    this.noiseBuf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
-    const d = this.noiseBuf.getChannelData(0);
-    let last = 0;
-    for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
   }
 
   async toggle(force) {
@@ -69,27 +64,21 @@ class AudioEngine {
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.frequency.value = p.lfo;
-    lfoGain.gain.value = 0.35;
+    lfoGain.gain.value = 0.2;
     lfo.connect(lfoGain);
     const trem = ctx.createGain();
-    trem.gain.value = 0.7;
+    trem.gain.value = 0.8;
     lfoGain.connect(trem.gain);
     trem.connect(out);
     p.tones.forEach(([f, type, g]) => {
       const o = ctx.createOscillator();
       const og = ctx.createGain();
-      o.type = type; o.frequency.value = f; o.detune.value = Math.random() * 8 - 4;
+      o.type = type; o.frequency.value = f; o.detune.value = Math.random() * 4 - 2;
       og.gain.value = g;
       o.connect(og).connect(trem);
       nodes.push(o);
     });
-    const n = ctx.createBufferSource();
-    n.buffer = this.noiseBuf; n.loop = true;
-    const filt = ctx.createBiquadFilter();
-    filt.type = "lowpass"; filt.frequency.value = p.noise;
-    const ng = ctx.createGain(); ng.gain.value = p.noiseGain;
-    n.connect(filt).connect(ng).connect(out);
-    nodes.push(n, lfo);
+    nodes.push(lfo);
     nodes.forEach((x) => x.start());
     return { out, nodes };
   }
@@ -123,21 +112,20 @@ class AudioEngine {
     o.start(t); o.stop(t + dur + 0.02);
   }
 
+  // Transizione morbida tra scene: glissando sinusoidale, senza rumore.
   whoosh() {
     if (!this.ctx || !this.enabled) return;
     const t = this.ctx.currentTime;
-    const n = this.ctx.createBufferSource();
-    n.buffer = this.noiseBuf;
-    const f = this.ctx.createBiquadFilter();
-    f.type = "bandpass"; f.Q.value = 1.2;
-    f.frequency.setValueAtTime(200, t);
-    f.frequency.exponentialRampToValueAtTime(2400, t + 0.9);
+    const o = this.ctx.createOscillator();
     const g = this.ctx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(330, t);
+    o.frequency.exponentialRampToValueAtTime(495, t + 1.2);
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.5, t + 0.3);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
-    n.connect(f).connect(g).connect(this.master);
-    n.start(t); n.stop(t + 1.2);
+    g.gain.exponentialRampToValueAtTime(0.06, t + 0.4);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+    o.connect(g).connect(this.master);
+    o.start(t); o.stop(t + 1.5);
   }
 }
 

@@ -14,7 +14,7 @@ export function useScrollStory(storyRef) {
     const reduced = prefersReducedMotion();
     let tick;
     if (!reduced) {
-      const lenis = new Lenis({ lerp: 0.085, smoothWheel: true });
+      const lenis = new Lenis({ duration: 1.35, easing: (t) => 1 - Math.pow(1 - t, 4), smoothWheel: true, wheelMultiplier: 0.8, touchMultiplier: 1.1 });
       lenisRef.current = lenis;
       lenis.on("scroll", ScrollTrigger.update);
       tick = (t) => lenis.raf(t * 1000);
@@ -48,7 +48,7 @@ export function useScrollStory(storyRef) {
     if (!el) return;
     const H = el.offsetHeight / 8;
     const y = el.getBoundingClientRect().top + window.scrollY + i * H + (H - window.innerHeight) / 2;
-    if (lenisRef.current) lenisRef.current.scrollTo(y, { duration: immediate ? 0 : 2.4, immediate });
+    if (lenisRef.current) lenisRef.current.scrollTo(y, { duration: immediate ? 0 : 2.2, immediate });
     else window.scrollTo({ top: y, behavior: immediate ? "auto" : "smooth" });
   }, [storyRef]);
 
