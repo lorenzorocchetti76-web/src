@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette, ToneMapping, SMAA } from "@react-three/postprocessing";
+import { Environment, Lightformer, PerformanceMonitor } from "@react-three/drei";
+import { EffectComposer, Bloom, Vignette, ToneMapping } from "@react-three/postprocessing";
 import { ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
 import { store, lowPower, prefersReducedMotion } from "@/lib/store";
@@ -11,6 +11,7 @@ import Diorama from "./Diorama";
 import EraProps from "./EraProps";
 import Particles from "./Particles";
 import { Meteors, Ufo } from "./Details2";
+import { WINDOW_MATS } from "./Models";
 import { smooth } from "./worldMath";
 
 const D2R = Math.PI / 180;
@@ -49,6 +50,11 @@ function CameraRig() {
 }
 
 const tmp = new THREE.Color();
+const NIGHT_BG = new THREE.Color("#03060d");
+const DAWN = new THREE.Color("#ff9a5a");
+const MOON = new THREE.Color("#8fa8ff");
+const SKY = new THREE.Color("#cfe9ff");
+const NIGHT_SKY = new THREE.Color("#3a4c80");
 function Atmosphere({ shadows }) {
   const { scene } = useThree();
   const dir = useRef();
@@ -59,18 +65,27 @@ function Atmosphere({ shadows }) {
     const t = clamp01(p - a);
     const A = ATMOS[a], B = ATMOS[b];
     if (!scene.background) scene.background = new THREE.Color();
-    scene.background.copy(A.bg).lerp(B.bg, t);
-    if (scene.fog) scene.fog.color.copy(scene.background);
-    dir.current.color.copy(tmp.copy(A.light).lerp(B.light, t));
-    dir.current.intensity = lerp(A.li, B.li, t) * 1.15;
-    amb.current.intensity = lerp(A.amb, B.amb, t) * 0.6;
+    // Ciclo giorno/notte guidato dallo scroll: alba -> mezzogiorno -> tramonto -> notte.
+    const night = smooth(5.2, 6.4, p) * (1 - smooth(6.6, 7, p) * 0.4);
+    const arc = clamp01((p - 0.6) / 5.4);
+    const sunEl = Math.sin(arc * Math.PI);
+    const ang = Math.PI * (1 - arc);
+    dir.current.position.set(Math.cos(ang) * 16, 2 + sunEl * 14, 6 - sunEl * 2);
+    scene.background.copy(A.bg).lerp(B.bg, t).lerp(NIGHT_BG, night * 0.6);
+    tmp.copy(A.light).lerp(B.light, t).lerp(DAWN, (1 - sunEl) * 0.55).lerp(MOON, night);
+    dir.current.color.copy(tmp);
+    dir.current.intensity = lerp(A.li, B.li, t) * 1.15 * (0.55 + 0.45 * sunEl) * (1 - night * 0.72);
+    amb.current.intensity = lerp(A.amb, B.amb, t) * 0.6 * (1 - night * 0.45);
+    amb.current.color.copy(SKY).lerp(NIGHT_SKY, night);
+    const glow = 0.15 + Math.max(night, (1 - sunEl) * 0.35) * 3.2;
+    WINDOW_MATS.forEach((m) => { m.emissiveIntensity = glow * m.userData.k; });
   });
   return (
     <>
       <hemisphereLight ref={amb} args={["#cfe9ff", "#1a1410", 0.5]} />
       <directionalLight ref={dir} position={[8, 14, 6]} castShadow={shadows}
-        shadow-mapSize={[2048, 2048]} shadow-camera-left={-11} shadow-camera-right={11}
-        shadow-camera-top={11} shadow-camera-bottom={-11} shadow-bias={-0.0004} shadow-normalBias={0.02} />
+        shadow-mapSize={[1024, 1024]} shadow-camera-left={-10} shadow-camera-right={10}
+        shadow-camera-top={10} shadow-camera-bottom={-10} shadow-bias={-0.0005} shadow-normalBias={0.03} />
       <directionalLight position={[-10, 6, -8]} intensity={0.35} color="#66d9ef" />
       <Environment resolution={128} frames={1}>
         <Lightformer intensity={1.6} position={[0, 6, -8]} scale={[14, 6, 1]} color="#dfefff" />
@@ -83,21 +98,36 @@ function Atmosphere({ shadows }) {
 
 function Effects() {
   return (
-    <EffectComposer multisampling={0} enableNormalPass={false}>
-      <SMAA />
-      <Bloom mipmapBlur intensity={0.75} luminanceThreshold={0.62} luminanceSmoothing={0.2} radius={0.7} />
+    <EffectComposer multisampling={0} enableNormalPass={false} resolutionScale={0.75}>
+      <Bloom mipmapBlur intensity={0.8} luminanceThreshold={0.62} luminanceSmoothing={0.2} radius={0.65} resolutionScale={0.5} />
       <Vignette eskil={false} offset={0.22} darkness={0.7} />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
     </EffectComposer>
   );
 }
 
+// Precompila tutti i materiali all'avvio: evita i micro-blocchi quando una scena compare per la prima volta.
+function Precompile() {
+  const { gl, scene, camera } = useThree();
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const hidden = [];
+      scene.traverse((o) => { if (!o.visible) { hidden.push(o); o.visible = true; } });
+      const done = () => hidden.forEach((o) => { o.visible = false; });
+      if (gl.compileAsync) gl.compileAsync(scene, camera).then(done).catch(done);
+      else { gl.compile(scene, camera); done(); }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [gl, scene, camera]);
+  return null;
+}
+
 function Stars({ q }) {
   return (
     <>
-      <Particles count={Math.round(1400 * q)} area={[160, 90, 160]} origin={[0, -30, 0]} speed={0.02} color="#dbe7f5" size={0.06} opacity={0.65} swirl={0} />
-      <Particles count={Math.round(160 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#ffffff" size={0.14} opacity={0.9} swirl={0} />
-      <Particles count={Math.round(80 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#9fd8ff" size={0.11} opacity={0.8} swirl={0} />
+      <Particles still count={Math.round(1400 * q)} area={[160, 90, 160]} origin={[0, -30, 0]} speed={0.02} color="#dbe7f5" size={0.06} opacity={0.65} swirl={0} />
+      <Particles still count={Math.round(160 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#ffffff" size={0.14} opacity={0.9} swirl={0} />
+      <Particles still count={Math.round(80 * q)} area={[120, 70, 120]} origin={[0, -25, 0]} speed={0.01} color="#9fd8ff" size={0.11} opacity={0.8} swirl={0} />
     </>
   );
 }
@@ -115,19 +145,22 @@ function SpaceExtras() {
 
 export default function World({ onReady }) {
   const low = lowPower();
+  const [degraded, setDegraded] = useState(false);
   const q = low ? 0.45 : 1;
   const shadows = !low;
   return (
     <Canvas
       data-testid="world-canvas"
       orthographic
-      shadows={shadows ? "soft" : false}
-      dpr={low ? [1, 1.25] : [1, 1.75]}
+      shadows={shadows}
+      dpr={low ? [1, 1.25] : degraded ? 1 : [1, 1.5]}
       gl={{ antialias: low, powerPreference: "high-performance", alpha: false, stencil: false }}
       camera={{ zoom: 40, near: 0.1, far: 400, position: [0, 40, 110] }}
       onCreated={({ gl }) => { gl.toneMapping = low ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping; onReady?.(); }}
     >
-      <Atmosphere shadows={shadows} />
+      <PerformanceMonitor onDecline={() => setDegraded(true)} flipflops={2} />
+      <Atmosphere shadows={shadows && !degraded} />
+      <Precompile />
       <CameraRig />
       <Stars q={q} />
       <SpaceExtras />
@@ -135,7 +168,7 @@ export default function World({ onReady }) {
       <Diorama n={low ? 14 : 18} shadows={shadows}>
         <EraProps q={q} shadows={shadows} />
       </Diorama>
-      {!low && <Effects />}
+      {!low && !degraded && <Effects />}
     </Canvas>
   );
 }

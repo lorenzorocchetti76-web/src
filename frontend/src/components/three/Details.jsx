@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { getSprite } from "./Particles";
 
 // Pioggia leggera: gocce come brevi segmenti inclinati dal vento.
 export function Rain({ count = 400, area = [14, 8, 14], speed = 9, wind = 0.12, color = "#a9cfe0", opacity = 0.35, visibleRef }) {
@@ -185,8 +186,10 @@ export function Aurora(props) {
 
 export function LavaGlow({ positions = [] }) {
   const refs = useRef([]);
-  useFrame((s) => { refs.current.forEach((l, i) => { if (l) l.intensity = 7 + Math.sin(s.clock.elapsedTime * 2.2 + i * 1.7) * 2.5; }); });
+  useFrame((s) => { refs.current.forEach((l, i) => { if (l) l.material.opacity = 0.45 + Math.sin(s.clock.elapsedTime * 2.2 + i * 1.7) * 0.15; }); });
   return positions.map((p, i) => (
-    <pointLight key={i} ref={(r) => { refs.current[i] = r; }} position={p} color="#ff6a2a" distance={6} decay={1.6} intensity={7} />
+    <sprite key={i} ref={(r) => { refs.current[i] = r; }} position={p} scale={5}>
+      <spriteMaterial map={getSprite()} color="#ff6a2a" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
+    </sprite>
   ));
 }

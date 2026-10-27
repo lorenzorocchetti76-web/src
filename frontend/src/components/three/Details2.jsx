@@ -151,7 +151,7 @@ export function Fire({ scale = 1, ...props }) {
   useFrame((s) => {
     const t = s.clock.elapsedTime * 9 + seed;
     if (g.current) g.current.children.forEach((m, i) => { m.scale.y = 1 + Math.sin(t + i * 2.1) * 0.25; m.rotation.y = t * 0.2 + i; });
-    if (light.current) light.current.intensity = 4 + Math.sin(t * 1.3) * 1.5;
+    if (light.current) light.current.material.opacity = 0.55 + Math.sin(t * 1.3) * 0.15;
   });
   return (
     <group {...props} scale={scale}>
@@ -160,7 +160,7 @@ export function Fire({ scale = 1, ...props }) {
         <mesh position-y={0.22}><coneGeometry args={[0.14, 0.42, 7]} /><meshBasicMaterial color="#ff9f43" /></mesh>
         <mesh position-y={0.18}><coneGeometry args={[0.07, 0.26, 6]} /><meshBasicMaterial color="#fff0b3" /></mesh>
       </group>
-      <pointLight ref={light} position-y={0.5} color="#ff7a2a" distance={4} decay={1.5} intensity={4} />
+      <sprite ref={light} position-y={0.35} scale={1.5}><spriteMaterial map={getSprite()} color="#ff7a2a" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} /></sprite>
     </group>
   );
 }

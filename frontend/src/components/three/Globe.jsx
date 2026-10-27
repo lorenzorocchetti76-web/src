@@ -22,7 +22,7 @@ const FRAG = `
 uniform float uTime; uniform float uStage; uniform float uHeat; uniform float uAlpha; uniform vec3 uSunObj; uniform vec3 uCamObj; uniform vec3 uAtmo;
 varying vec3 vPos; varying vec3 vN; varying vec3 vW;
 ${NOISE}
-float terrain(vec3 p){ vec3 q=p*2.1; q+=0.45*vec3(fbm(q+1.7),fbm(q+5.2),fbm(q+9.1)); return fbm(q); }
+float terrain(vec3 p){ vec3 q=p*2.1; q+=0.45*vec3(fbm(q+1.7),fbm(q+5.2),0.0); return fbm(q); }
 void main(){
  vec3 n0=normalize(vPos);
  vec3 T1=normalize(cross(n0,vec3(0.0,1.0,0.0))+vec3(1e-4));
@@ -94,7 +94,7 @@ export default function Globe({ segments = 96, low = false }) {
   const group = useRef();
   const mesh = useRef();
   const clouds = useRef();
-  const defines = useMemo(() => ({ OCT: low ? 4 : 6 }), [low]);
+  const defines = useMemo(() => ({ OCT: low ? 3 : 5 }), [low]);
   const uniforms = useMemo(() => ({
     uTime: { value: 0 }, uStage: { value: 0 }, uHeat: { value: 0 }, uAlpha: { value: 1 },
     uSunObj: { value: new THREE.Vector3() }, uCamObj: { value: new THREE.Vector3() }, uAtmo: { value: MAGMA_ATMO.clone() },
@@ -125,7 +125,7 @@ export default function Globe({ segments = 96, low = false }) {
     uniforms.uSunObj.value.sub(mesh.current.worldToLocal(new THREE.Vector3()));
     uniforms.uCamObj.value.copy(state.camera.position);
     mesh.current.worldToLocal(uniforms.uCamObj.value);
-    const transparent = gw < 0.999;
+    const transparent = true;
     if (mesh.current.material.transparent !== transparent) {
       mesh.current.material.transparent = transparent;
       mesh.current.material.needsUpdate = true;

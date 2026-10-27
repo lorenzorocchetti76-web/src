@@ -164,7 +164,6 @@ export default function EraProps({ q = 1, shadows = false }) {
             <Person key={`w${i}`} position={on(4, x, z)} shirt="#2f4f6f" hat="#f6b93b" rotation-y={i * 1.3} />
           ))}
           <Person position={on(4, 1.2, 1.4)} shirt="#2f4f6f" hat="#f6b93b" radius={0.6} speed={0.4} />
-          <pointLight position={[1.5, 3, -1]} color="#ffb070" intensity={8} distance={10} />
           <Rain visibleRef={vis} count={c(380)} area={[13, 8, 13]} speed={9} wind={0.18} color="#9aa3ab" opacity={0.3} />
           <Particles visibleRef={vis} count={c(120)} area={[5, 6, 4]} origin={[-1.6, 2.5, 1.6]} speed={0.6} color="#6f7277" size={0.25} additive={false} opacity={0.4} swirl={0.4} />
         </>)}

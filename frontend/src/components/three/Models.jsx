@@ -1,5 +1,17 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+
+// Materiali condivisi delle finestre: l'intensità cresce di notte (aggiornata dal ciclo giorno/notte).
+const win = (color, emissive, k, extra = {}) => {
+  const m = new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: 1.2 * k, ...extra });
+  m.userData.k = k;
+  return m;
+};
+export const HOUSE_WIN = win("#ffcf7a", "#ffb347", 1);
+export const FACTORY_WIN = win("#ffb070", "#ff7138", 0.8);
+export const CITY_WIN = win("#ffe2a8", "#ffcc66", 0.6, { transparent: true, opacity: 0.85 });
+export const WINDOW_MATS = [HOUSE_WIN, FACTORY_WIN, CITY_WIN];
 
 // Modelli procedurali low-poly condivisi tra esperienza e galleria (nessun download: caricamento istantaneo).
 export function Volcano({ glow = 1, ...props }) {
@@ -90,7 +102,8 @@ export function House({ roof = "#e9eef2", wall = "#8a6b52", ...props }) {
       <mesh castShadow receiveShadow position-y={0.25}><boxGeometry args={[0.6, 0.5, 0.45]} /><meshStandardMaterial color={wall} roughness={0.9} /></mesh>
       <mesh castShadow position-y={0.66} rotation-y={Math.PI / 4}><coneGeometry args={[0.48, 0.4, 4]} /><meshStandardMaterial color={roof} flatShading /></mesh>
       <mesh position={[0.18, 0.75, 0]}><boxGeometry args={[0.09, 0.3, 0.09]} /><meshStandardMaterial color="#4a3a30" /></mesh>
-      <mesh position={[0, 0.25, 0.23]}><planeGeometry args={[0.12, 0.12]} /><meshStandardMaterial color="#ffcf7a" emissive="#ffb347" emissiveIntensity={1.2} /></mesh>
+      <mesh position={[0, 0.25, 0.23]} material={HOUSE_WIN}><planeGeometry args={[0.12, 0.12]} /></mesh>
+      <mesh position={[0.31, 0.25, 0]} rotation-y={Math.PI / 2} material={HOUSE_WIN}><planeGeometry args={[0.1, 0.12]} /></mesh>
     </group>
   );
 }
@@ -106,7 +119,7 @@ export function Factory(props) {
         <mesh key={x} castShadow position={[x, 1.4, -0.25]}><cylinderGeometry args={[0.1, 0.14, 1.9, 8]} /><meshStandardMaterial color="#4a2a20" /></mesh>
       ))}
       {[-0.6, -0.2, 0.2, 0.6].map((x) => (
-        <mesh key={x} position={[x, 0.45, 0.452]}><planeGeometry args={[0.18, 0.3]} /><meshStandardMaterial color="#ffb070" emissive="#ff7138" emissiveIntensity={0.9} /></mesh>
+        <mesh key={x} position={[x, 0.45, 0.452]} material={FACTORY_WIN}><planeGeometry args={[0.18, 0.3]} /></mesh>
       ))}
     </group>
   );
@@ -137,7 +150,7 @@ export function CityBlock(props) {
       {TOWERS.map(([x, z, h], i) => (
         <group key={i} position={[x, 0, z]}>
           <mesh castShadow receiveShadow position-y={h / 2}><boxGeometry args={[0.36, h, 0.36]} /><meshStandardMaterial color="#c3d2de" roughness={0.3} metalness={0.25} /></mesh>
-          <mesh position={[0, h * 0.55, 0.181]}><planeGeometry args={[0.24, h * 0.8]} /><meshStandardMaterial color="#66d9ef" emissive="#66d9ef" emissiveIntensity={0.35} transparent opacity={0.5} /></mesh>
+          <mesh position={[0, h * 0.55, 0.181]} material={CITY_WIN}><planeGeometry args={[0.24, h * 0.8]} /></mesh>
         </group>
       ))}
     </group>

@@ -42,6 +42,10 @@
 - Cap.1 meteoriti, più stelle, ufo; cap.2 fuochi sulle terre emerse; cap.3 vapori; cap.4 persone, cavalli, cani, mucche, lago con pesci; cap.5 più luce, binari più lunghi con traversine, operai, camion di carbone; cap.6 infografica multicolore; cap.7 sole, ozono, autostrada con camion, aerei
 - Alone del globo a gradiente morbido; testi bianchi; titoli Inter 800; titolo "Punto di non ritorno"; frase finale in minuscolo
 
+## Iterazione 5 (2026-10-27)
+- Ciclo giorno/notte legato allo scroll (alba cap.2 → giorno → tramonto cap.6 → notte cap.7) con finestre di case/fabbriche/città che si accendono (materiali condivisi)
+- Performance: precompilazione materiali, niente point light dinamiche (sostituite da glow), shader globo più leggero, ombre 1024 PCF, bloom a mezza risoluzione, niente SMAA, dpr max 1.5, stelle statiche, PerformanceMonitor che abbassa qualità se gli fps calano
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

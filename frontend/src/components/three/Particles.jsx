@@ -21,7 +21,7 @@ export const getSprite = () => {
 // Sistema di particelle generico: moto verticale (cenere, bolle, fumo, neve, CO₂) a costo minimo.
 export default function Particles({
   count = 200, area = [10, 4, 10], origin = [0, 0, 0], speed = 0.5, color = "#ff7138",
-  size = 0.08, opacity = 0.9, additive = true, swirl = 0.2, visibleRef,
+  size = 0.08, opacity = 0.9, additive = true, swirl = 0.2, visibleRef, still = false,
 }) {
   const ref = useRef();
   const camera = useThree((s) => s.camera);
@@ -40,6 +40,7 @@ export default function Particles({
   useFrame((state, dt) => {
     if (visibleRef && !visibleRef.current) return;
     if (camera.isOrthographicCamera) ref.current.material.size = size * camera.zoom * 0.9;
+    if (still) return;
     const arr = ref.current.geometry.attributes.position.array;
     const t = state.clock.elapsedTime;
     const d = Math.min(dt, 0.05);
