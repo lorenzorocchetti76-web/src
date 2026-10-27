@@ -2,6 +2,40 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+// Pioggia leggera: gocce come brevi segmenti inclinati dal vento.
+export function Rain({ count = 400, area = [14, 8, 14], speed = 9, wind = 0.12, color = "#a9cfe0", opacity = 0.35, visibleRef }) {
+  const ref = useRef();
+  const pos = useMemo(() => {
+    const p = new Float32Array(count * 6);
+    for (let i = 0; i < count; i++) {
+      const x = (Math.random() - 0.5) * area[0], y = Math.random() * area[1], z = (Math.random() - 0.5) * area[2];
+      p.set([x, y, z, x + wind * 0.35, y - 0.35, z], i * 6);
+    }
+    return p;
+  }, [count, area, wind]);
+  useFrame((_, dt) => {
+    if ((visibleRef && !visibleRef.current) || !ref.current) return;
+    const a = ref.current.geometry.attributes.position.array;
+    const d = Math.min(dt, 0.05) * speed;
+    for (let i = 0; i < count; i++) {
+      const k = i * 6;
+      a[k + 1] -= d; a[k + 4] -= d; a[k] += d * wind; a[k + 3] += d * wind;
+      if (a[k + 4] < 0) {
+        const x = (Math.random() - 0.5) * area[0];
+        a[k] = x; a[k + 1] = area[1]; a[k + 3] = x + wind * 0.35; a[k + 4] = area[1] - 0.35;
+      }
+    }
+    ref.current.geometry.attributes.position.needsUpdate = true;
+  });
+  return (
+    <lineSegments ref={ref}>
+      <bufferGeometry><bufferAttribute attach="attributes-position" args={[pos, 3]} /></bufferGeometry>
+      <lineBasicMaterial color={color} transparent opacity={opacity} depthWrite={false} />
+    </lineSegments>
+  );
+}
+
+
 // Dettagli ambientali procedurali: nuvole, mulino, treno, pale eoliche, iceberg, uccelli, rocce, aurora.
 export function Cloud({ speed = 0.25, range = 7, ...props }) {
   const g = useRef();

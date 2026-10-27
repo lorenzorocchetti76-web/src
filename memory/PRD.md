@@ -34,6 +34,9 @@
 - Più dettagli: rocce, bagliori lavici, iceberg, aurora, mulino, uccelli, treno, pale eoliche, nuvole
 - Font Space Grotesk + Inter; audio solo toni puri (niente rumore); scroll più equilibrato (sezioni 170vh, Lenis a durata)
 
+## Iterazione 3 (2026-10-27)
+- Pioggia leggera inclinata dal vento (Ossigeno, Industria, Oggi), pini che ondeggiano al vento, onde animate sull'acqua (shader vertex con normali dinamiche)
+
 ## Backlog
 - P1: sostituzione testi con versione Studio Rocchetti (5 fasi) — solo `content.js` + eventuali modelli
 - P1: notifiche push (rimandate dall'utente)

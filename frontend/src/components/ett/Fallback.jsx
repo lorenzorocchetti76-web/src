@@ -6,7 +6,10 @@ import { logError } from "@/lib/api";
 export class ErrorBoundary extends Component {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  componentDidCatch(error, info) { logError(`[${this.props.name || "boundary"}] ${error?.message}`, `${error?.stack}\n${info?.componentStack || ""}`); }
+  componentDidCatch(error, info) {
+    logError(`[${this.props.name || "boundary"}] ${error?.message}`, `${error?.stack}\n${info?.componentStack || ""}`);
+    if (!this.retried) { this.retried = true; setTimeout(() => this.setState({ failed: false }), 1200); }
+  }
   render() { return this.state.failed ? this.props.fallback : this.props.children; }
 }
 

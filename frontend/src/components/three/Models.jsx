@@ -65,11 +65,21 @@ export function Glacier(props) {
 }
 
 export function Pine({ snow = 1, ...props }) {
+  const sway = useRef();
+  const seed = useRef(Math.random() * 6.28);
+  useFrame((s) => {
+    if (!sway.current) return;
+    const t = s.clock.elapsedTime;
+    sway.current.rotation.z = Math.sin(t * 1.4 + seed.current) * 0.05 + Math.sin(t * 3.1 + seed.current) * 0.015;
+    sway.current.rotation.x = Math.cos(t * 1.1 + seed.current) * 0.025;
+  });
   return (
     <group {...props}>
       <mesh position-y={0.15}><cylinderGeometry args={[0.05, 0.06, 0.3, 5]} /><meshStandardMaterial color="#3b2a1d" /></mesh>
-      <mesh castShadow position-y={0.55}><coneGeometry args={[0.28, 0.75, 6]} /><meshStandardMaterial color={snow ? "#5c7f6d" : "#2f5a3a"} flatShading /></mesh>
-      {snow ? <mesh position-y={0.82}><coneGeometry args={[0.13, 0.25, 6]} /><meshStandardMaterial color="#f4f7fa" flatShading /></mesh> : null}
+      <group ref={sway} position-y={0.25}>
+        <mesh castShadow position-y={0.3}><coneGeometry args={[0.28, 0.75, 6]} /><meshStandardMaterial color={snow ? "#5c7f6d" : "#2f5a3a"} flatShading /></mesh>
+        {snow ? <mesh position-y={0.57}><coneGeometry args={[0.13, 0.25, 6]} /><meshStandardMaterial color="#f4f7fa" flatShading /></mesh> : null}
+      </group>
     </group>
   );
 }

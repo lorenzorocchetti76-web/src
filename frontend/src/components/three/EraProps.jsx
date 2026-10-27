@@ -5,7 +5,7 @@ import { store } from "@/lib/store";
 import { sceneWeight, groundY } from "./worldMath";
 import Particles from "./Particles";
 import { Volcano, Stromatolites, Glacier, Pine, House, Factory, CityBlock } from "./Models";
-import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow } from "./Details";
+import { Cloud, Windmill, Turbine, Train, Iceberg, Birds, Rocks, Aurora, LavaGlow, Rain } from "./Details";
 
 // Gruppo che compare/scompare in base alla vicinanza del progresso alla scena indicata.
 function Era({ index, spread = 1.25, children }) {
@@ -80,6 +80,7 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Rocks count={c(24)} color="#4a4038" groundY={(x, z) => groundY(1, x, z)} />
           <Cloud position={[0, 5.5, -2]} scale={1.3} speed={0.2} />
           <Cloud position={[0, 4.8, 3]} scale={1} speed={0.15} />
+          <Rain visibleRef={vis} count={c(420)} area={[13, 7, 13]} speed={8} wind={0.1} opacity={0.32} />
         </>)}
       </Era>
       <Era index={2}>
@@ -123,6 +124,7 @@ export default function EraProps({ q = 1, shadows = false }) {
           <Particles visibleRef={vis} count={c(260)} area={[7, 8, 5]} origin={[0.8, 2.5, 0]} speed={0.7} color="#8c8f94" size={0.22} additive={false} opacity={0.45} swirl={0.5} />
           <Particles visibleRef={vis} count={c(140)} area={[16, 4, 16]} origin={[0, 7, 0]} speed={0.12} color="#66d9ef" size={0.06} />
           <Train path={5.2} y={0.75} />
+          <Rain visibleRef={vis} count={c(380)} area={[13, 8, 13]} speed={9} wind={0.18} color="#9aa3ab" opacity={0.3} />
           <Particles visibleRef={vis} count={c(120)} area={[5, 6, 4]} origin={[-1.6, 2.5, 1.6]} speed={0.6} color="#6f7277" size={0.25} additive={false} opacity={0.4} swirl={0.4} />
         </>)}
       </Era>
@@ -161,6 +163,7 @@ export default function EraProps({ q = 1, shadows = false }) {
           <CityBlock position={on(6, 4.4, -2.4)} scale={0.8} rotation-y={0.6} />
           <Birds radius={3.6} y={4.5} count={4} speed={0.5} />
           <Cloud position={[0, 6.5, 1]} scale={1} speed={0.22} />
+          <Rain visibleRef={vis} count={c(300)} area={[13, 7, 13]} speed={10} wind={0.22} opacity={0.28} />
         </>)}
       </Era>
     </group>

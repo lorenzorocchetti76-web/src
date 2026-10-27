@@ -14,6 +14,24 @@ export default function Diorama({ n = 18, shadows = false, children }) {
   const inst = useRef();
   const water = useRef();
   const last = useRef(-1);
+  const waveTime = useMemo(() => ({ value: 0 }), []);
+  const onWaterCompile = useMemo(() => (s) => {
+    s.uniforms.uTime = waveTime;
+    s.vertexShader = `uniform float uTime;\n${s.vertexShader}`
+      .replace("#include <beginnormal_vertex>", `
+        float ph1 = position.x * 1.3 + uTime * 1.6;
+        float ph2 = position.y * 1.7 - uTime * 1.2;
+        float ph3 = (position.x + position.y) * 2.4 + uTime * 2.2;
+        float wdx = cos(ph1) * 0.078 + cos(ph3) * 0.06;
+        float wdy = cos(ph2) * 0.085 + cos(ph3) * 0.06;
+        vec3 objectNormal = normalize(vec3(-wdx, -wdy, 1.0));
+        #ifdef USE_TANGENT
+          vec3 objectTangent = vec3(tangent.xyz);
+        #endif`)
+      .replace("#include <begin_vertex>", `
+        vec3 transformed = vec3(position);
+        transformed.z += sin(ph1) * 0.06 + sin(ph2) * 0.05 + sin(ph3) * 0.025;`);
+  }, [waveTime]);
 
   const cells = useMemo(() => {
     const arr = [];
@@ -27,11 +45,12 @@ export default function Diorama({ n = 18, shadows = false, children }) {
 
   const geo = useMemo(() => { const g = new RoundedBoxGeometry(CELL * 0.96, 1, CELL * 0.96, 2, 0.05); g.translate(0, 0.5, 0); return g; }, []);
 
-  useFrame(() => {
+  useFrame((state) => {
     const p = store.progress;
     const dw = dioramaWeight(p);
     group.current.visible = dw > 0.01;
     if (!group.current.visible) return;
+    waveTime.value = state.clock.elapsedTime;
     group.current.position.y = (1 - dw) * -9;
     group.current.scale.setScalar(0.55 + 0.45 * dw);
     if (Math.abs(p - last.current) < 0.0008) return;
@@ -73,8 +92,8 @@ export default function Diorama({ n = 18, shadows = false, children }) {
         <meshStandardMaterial roughness={0.72} metalness={0.04} envMapIntensity={0.6} />
       </instancedMesh>
       <mesh ref={water} rotation-x={-Math.PI / 2}>
-        <planeGeometry args={[size, size]} />
-        <meshStandardMaterial transparent opacity={0} roughness={0.55} metalness={0} envMapIntensity={0.12} color="#0e4f63" depthWrite={false} />
+        <planeGeometry args={[size, size, 72, 72]} />
+        <meshStandardMaterial transparent opacity={0} roughness={0.32} metalness={0} envMapIntensity={0.15} color="#0e4f63" depthWrite={false} onBeforeCompile={onWaterCompile} />
       </mesh>
       <mesh position-y={-0.6}>
         <boxGeometry args={[size + 0.4, 1.2, size + 0.4]} />
